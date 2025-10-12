@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>API接口测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .result { background: #f5f5f5; padding: 10px; margin-top: 10px; border-radius: 3px; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 8px 15px; margin-right: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>后台管理系统 API 接口测试</h1>
+    
+    <div class="test-section">
+        <h3>1. 游戏消息API测试 (gameMsg)</h3>
+        <button onclick="testGameMsg()">测试 gameMsg 接口</button>
+        <div id="gameMsg-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. 登录API测试</h3>
+        <p>用户名: <input type="text" id="username" value="admin" /></p>
+        <p>密码: <input type="password" id="password" value="123456" /></p>
+        <button onclick="testLogin()">测试登录接口</button>
+        <div id="login-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. 创建默认管理员账号</h3>
+        <button onclick="createAdmin()">创建管理员账号</button>
+        <div id="admin-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. 系统状态检查</h3>
+        <button onclick="checkSystem()">检查系统状态</button>
+        <div id="system-result" class="result"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    // 测试gameMsg接口
+    function testGameMsg() {
+        $.ajax({
+            url: '/Admin/Index/gameMsg',
+            type: 'POST',
+            dataType: 'json',
+            success: function(data) {
+                $('#gameMsg-result').html(
+                    '<span class="success">✓ 接口正常</span><br>' +
+                    'JSON响应: ' + JSON.stringify(data, null, 2)
+                );
+            },
+            error: function(xhr, status, error) {
+                $('#gameMsg-result').html(
+                    '<span class="error">✗ 接口错误</span><br>' +
+                    '错误信息: ' + error + '<br>' +
+                    '状态码: ' + xhr.status
+                );
+            }
+        });
+    }
+    
+    // 测试登录接口
+    function testLogin() {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        
+        $.ajax({
+            url: '/Admin/Login/login',
+            type: 'POST',
+            data: {
+                username: username,
+                password: password
+            },
+            dataType: 'json',
+            success: function(data) {
+                $('#login-result').html(
+                    '<span class="success">✓ 登录响应正常</span><br>' +
+                    'JSON响应: ' + JSON.stringify(data, null, 2)
+                );
+            },
+            error: function(xhr, status, error) {
+                $('#login-result').html(
+                    '<span class="error">✗ 登录请求错误</span><br>' +
+                    '错误信息: ' + error + '<br>' +
+                    '状态码: ' + xhr.status + '<br>' +
+                    '响应内容: ' + xhr.responseText
+                );
+            }
+        });
+    }
+    
+    // 创建管理员账号
+    function createAdmin() {
+        $.ajax({
+            url: '/Admin/Login/createAdmin',
+            type: 'GET',
+            success: function(data) {
+                $('#admin-result').html(
+                    '<span class="success">✓ 请求成功</span><br>' +
+                    '响应内容: ' + data
+                );
+            },
+            error: function(xhr, status, error) {
+                $('#admin-result').html(
+                    '<span class="error">✗ 请求失败</span><br>' +
+                    '错误信息: ' + error + '<br>' +
+                    '状态码: ' + xhr.status
+                );
+            }
+        });
+    }
+    
+    // 系统状态检查
+    function checkSystem() {
+        var checks = [];
+        
+        // 检查PHP版本
+        $.get('/test_php.php', function(data) {
+            checks.push('PHP: 运行正常');
+            updateSystemResult(checks);
+        }).fail(function() {
+            checks.push('PHP: 可能存在问题');
+            updateSystemResult(checks);
+        });
+        
+        // 检查数据库连接（通过gameMsg接口）
+        $.ajax({
+            url: '/Admin/Index/gameMsg',
+            type: 'POST',
+            success: function() {
+                checks.push('数据库: 连接正常');
+                updateSystemResult(checks);
+            },
+            error: function() {
+                checks.push('数据库: 连接可能有问题');
+                updateSystemResult(checks);
+            }
+        });
+        
+        // 检查静态资源
+        $.get('/Public/Admin/css/admin-custom.css', function() {
+            checks.push('静态资源: 加载正常');
+            updateSystemResult(checks);
+        }).fail(function() {
+            checks.push('静态资源: 部分资源可能缺失');
+            updateSystemResult(checks);
+        });
+    }
+    
+    function updateSystemResult(checks) {
+        $('#system-result').html(
+            '<span class="success">系统检查结果:</span><br>' +
+            checks.join('<br>')
+        );
+    }
+    </script>
+</body>
+</html>

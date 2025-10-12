@@ -5,21 +5,57 @@ use Think\Controller;
 class IndexController extends BaseController {
 	
     public function index(){
-    	// $auth_url = "http://auth.164pk.com/Home/Index/authcheck?auth_code=".C('auth_code');
-    	// $auth = curlGet($auth_url);
-    	// $auth = trim($auth,chr(239).chr(187).chr(191));
-    	// $this->assign('auth',json_decode($auth,true));
-
-    	//上分请求个数
-
+    	// 检查设备类型
+    	$is_mobile = is_mobile();
+    	
+    	// 获取待处理的上下分请求数量
     	$xf_count = M('fenxia')->where("status=0")->count();
     	$sf_count = M('fenadd')->where("`check`=0")->count();
-    	$is_mobile = is_mobile();
+    	
+    	// 获取系统基本信息
+    	$admin_info = session('admin');
+    	$system_info = array(
+    		'admin_name' => $admin_info['username'],
+    		'system_name' => C('sitename'),
+    		'login_time' => date('Y-m-d H:i:s', $admin_info['last_time']),
+    		'login_ip' => $admin_info['last_ip']
+    	);
+    	
+    	// 获取今日统计数据
+    	$today_stats = $this->getTodayStats();
 
-    	$this->assign("is_mobile",$is_mobile);
-    	$this->assign("sf_count",$sf_count);
-    	$this->assign("xf_count",$xf_count);
+    	$this->assign("is_mobile", $is_mobile);
+    	$this->assign("sf_count", $sf_count);
+    	$this->assign("xf_count", $xf_count);
+    	$this->assign("system_info", $system_info);
+    	$this->assign("today_stats", $today_stats);
         $this->display();
+	}
+	
+	// 获取今日统计数据
+	private function getTodayStats(){
+		$start = mktime(0,0,0,date('m'),date('d'),date('Y'));
+		$end = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
+		
+		// 今日投注统计
+		$order_map['time'] = array(array('egt',$start),array('elt',$end),'and');
+		$order_map['state'] = 1;
+		$order_stats = M('order')->field("COUNT(*) as count, SUM(add_points) AS add_points, SUM(del_points) AS del_points")->where($order_map)->find();
+		
+		// 今日用户统计
+		$user_map['reg_time'] = array(array('egt',$start),array('elt',$end),'and');
+		$new_users = M('user')->where($user_map)->count();
+		
+		// 在线用户统计（最近10分钟活跃）
+		$online_time = time() - 600;
+		$online_users = M('user')->where("last_time > {$online_time}")->count();
+		
+		return array(
+			'order_count' => $order_stats['count'] ?: 0,
+			'today_profit' => ($order_stats['del_points'] - $order_stats['add_points']) ?: 0,
+			'new_users' => $new_users ?: 0,
+			'online_users' => $online_users ?: 0
+		);
 	}
 	
 	public function gameMsg() {
@@ -31,7 +67,7 @@ class IndexController extends BaseController {
     }
 	
 	
-	public function show(){
+	public function dashboard(){
 		 // $auth_url = "http://pk.fylyf.cn/Home/Index/authcheck?auth_code=".C('auth_code');
    //  	$auth = curlGet($auth_url);
    //  	$auth = trim($auth,chr(239).chr(187).chr(191));
