@@ -194,19 +194,19 @@ class FenController extends BaseController{
                     }
                 }
 				if ($checkpic != $oldcheckpic) {
-                    $data['wx_paycode'] = $img_url;
+                    $data['usdt_paycode'] = $img_url;
                 }
 
                 $log = array(
 					'username' => session('admin')['username'],
 					'type' => 5,
 					'addtime' => time(),
-					'content' => "修改微信收款二维码"
+					'content' => "修改USDT收款二维码"
 				);
 				M('admin_log')->add($log);
 
 				$id = session('agent')['id'];
-				if($data['wx_paycode']){
+				if($data['usdt_paycode']){
 					$result = M('user')->where("id={$id}")->save($data);
 				}
 				if($result){

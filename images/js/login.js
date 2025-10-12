@@ -67,7 +67,7 @@
             checkForm: function() {
                 return "" == $.trim($("input[name=account]").val()) ? (weui.alert("请填写您的账号"), !1) :
                        "" == $.trim($("input[name=password]").val()) ? (weui.alert("请填写密码！"), !1) :
-                        "" == $.trim($("input[name=pic_code]").val()) || (weui.alert("请填写图片验证码！"), !1)
+                        "" == $.trim($("input[name=pic_code]").val()) ? (weui.alert("请填写图片验证码！"), !1) : !0
             }
         };
         t.bootstrap();
