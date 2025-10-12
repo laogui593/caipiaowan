@@ -19,6 +19,7 @@
 		<link href="__PUBLIC__/Admin/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
 		<link href="__PUBLIC__/Admin/css/animate.min.css" rel="stylesheet">
 		<link href="__PUBLIC__/Admin/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+		<link href="__PUBLIC__/Admin/css/admin-custom.css?v=1.0" rel="stylesheet">
 	</head>
 	<style type="text/css">
 		.navbar{margin-bottom:0;}
@@ -330,14 +331,20 @@
 			<!--右侧部分开始-->
 			<div id="page-wrapper" class="gray-bg dashbard-1">
 				<div class="row border-bottom">
-					<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0；overflow:hidden;">
+					<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0; overflow:hidden;">
 						<div class="navbar-header" style="width: 10%;">
 							<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 						</div>
 					
-						<div class="notice" style="display:inline-block;float: right;height: 50px;line-height: 50px">
-							<a href="/Admin/Fen/addlist"  class="J_menuItem btn shang">上分请求:<font color="red">{$sf_count}</font> <span></span>个</a>
-							<a href="/Admin/Fen/xialist" class="J_menuItem btn xia">下分请求 <font color="red">{$xf_count}</font><span></span>个</a>
+						<div class="notice" style="float: right; height: 50px; line-height: 50px; padding-right: 15px;">
+							<a href="/Admin/Fen/addlist" class="J_menuItem btn btn-success btn-sm shang" style="margin-right: 10px;">
+								<i class="fa fa-arrow-up"></i> 上分请求: <span class="badge">{$sf_count}</span>
+								<span class="audio-trigger"></span>
+							</a>
+							<a href="/Admin/Fen/xialist" class="J_menuItem btn btn-warning btn-sm xia">
+								<i class="fa fa-arrow-down"></i> 下分请求: <span class="badge">{$xf_count}</span>
+								<span class="audio-trigger"></span>
+							</a>
 						</div>
 					
 					</nav>
@@ -345,7 +352,7 @@
 				</div>
 
 				<div class="row J_mainContent" id="content-main" style="overflow-y: auto; -webkit-overflow-scrolling: touch; overflow-y: scroll;">
-					<iframe id="iframe_default" src="{:U('Admin/Index/show')}" class="J_iframe" name="iframe0" width="100%" height="100%" frameborder="0" data-id="default" seamless></iframe>
+					<iframe id="iframe_default" src="{:U('Admin/Index/dashboard')}" class="J_iframe" name="iframe0" width="100%" height="100%" frameborder="0" data-id="default" seamless></iframe>
 				</div>
 			<!-- 	<div class="footer">
 					<div class="pull-right">Copyright@ 2017 OOP
