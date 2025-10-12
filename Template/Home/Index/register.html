@@ -484,8 +484,6 @@
                             我已年满18岁，同意相关服务条款
                         </label>
                     </div>
-                    
-                    <input type="hidden" name="code" value="1234" />
 
                     <button type="submit" class="submit-button">创建账号</button>
                 </form>
@@ -513,10 +511,6 @@
     <script src="__PUBLIC__/Common/js/ajaxForm.js"></script>
     <script src="__PUBLIC__/layer/layer.js"></script>
     <script>
-        $('#img-code').on('click', function(){
-            $(this).attr('src', "{:U('Home/Index/getcode')}?"+Math.random());
-        });
-
         $(function(){
             $('#LoginForm').ajaxForm({
                 type: 'post',
@@ -615,13 +609,7 @@
                     });
                     return false;
                 }
-                if ( '' == $.trim($('input[name="code"]').val())){
-                    layer.alert('验证码不能为空', {icon: 5}, function(index){
-                        layer.close(index);
-                        $('input[name="code"]').focus();
-                    });
-                    return false;
-                }
+
             }
 
             function complete(data){
@@ -637,7 +625,6 @@
                     });
                 }else{
                     layer.msg(data.info || '注册失败');
-                    $('#img-code').trigger('click');
                     return false;
                 }
             }

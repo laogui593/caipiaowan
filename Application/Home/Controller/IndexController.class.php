@@ -217,10 +217,6 @@ class IndexController extends BaseController
 			if (!$txpassword) {
                 $this->error('提现密码不能为空');die;
             }
-            $verify = new \Think\Verify();
-            if (!$verify->check($code)) {
-                $this->error('验证码输入不正确');die;
-            }
 
 
             $password = md5($password);
