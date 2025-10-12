@@ -66,6 +66,16 @@
 **文件**: `Template/Admin/Admin/log.html`
 - 日志类型选项从 `修改微信收款码` 改为 `修改USDT收款码` (两处)
 
+**文件**: `Template/Home/User/yzq.html` (提现页面)
+- 收款类型选项从 `微信` 改为 `USDT`
+- 表单标签从 `微信帐号` 改为 `USDT钱包地址`
+
+**文件**: `Template/Admin/Fen/xialist.html` (管理员提现列表)
+- 类型显示从 `微信` 改为 `USDT`
+
+**文件**: `Template/Agent/Fen/xialist.html` (代理提现列表)
+- 类型显示从 `微信` 改为 `USDT`
+
 ## 影响范围 (Impact Scope)
 
 ### 数据库字段 (Database Fields)
@@ -107,7 +117,7 @@ UPDATE `user` SET `usdt_paycode` = `wx_paycode` WHERE `wx_paycode` IS NOT NULL;
 
 ## 文件清单 (File List)
 
-总共修改了11个文件：
+总共修改了14个文件：
 1. `images/js/login.js` - 修复验证码验证逻辑
 2. `Application/Home/Controller/FenController.class.php` - 更改支付类型
 3. `Application/Agent/Controller/FenController.class.php` - 更改支付类型
@@ -119,3 +129,12 @@ UPDATE `user` SET `usdt_paycode` = `wx_paycode` WHERE `wx_paycode` IS NOT NULL;
 9. `Template/Admin/Fen/setwx.html` - 更新管理员设置页面
 10. `Template/Admin/Index/index.html` - 更新菜单
 11. `Template/Admin/Admin/log.html` - 更新日志显示
+12. `Template/Home/User/yzq.html` - 更新提现页面（微信改为USDT）
+13. `Template/Admin/Fen/xialist.html` - 更新管理员提现列表显示
+14. `Template/Agent/Fen/xialist.html` - 更新代理提现列表显示
+
+## 未修改的文件 (Files Not Modified)
+
+以下文件包含"微信"引用，但保持不变，因为它们用于客服通讯而非支付：
+- `Template/Home/Run/kefu_wx.html` - 微信客服二维码（用于客户沟通）
+- 其他游戏模板中的微信分享功能
