@@ -7,7 +7,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<title>后台管理系统</title>
+		<title>后台管理系统 - 登录</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
 
@@ -25,6 +25,52 @@
 				window.top.location = window.location;
 			}
 		</script>
+		<style>
+			body.gray-bg {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				min-height: 100vh;
+			}
+			.middle-box {
+				background: rgba(255, 255, 255, 0.95);
+				border-radius: 16px;
+				padding: 40px;
+				box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+				backdrop-filter: blur(10px);
+			}
+			.middle-box h3 {
+				color: #333;
+				font-weight: 600;
+				margin-bottom: 30px;
+			}
+			.form-control {
+				height: 45px;
+				border-radius: 8px;
+				border: 1px solid #ddd;
+				padding: 10px 15px;
+				font-size: 14px;
+				transition: all 0.3s ease;
+			}
+			.form-control:focus {
+				border-color: #667eea;
+				box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+			}
+			.btn-success {
+				height: 45px;
+				border-radius: 8px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				border: none;
+				font-weight: 600;
+				font-size: 16px;
+				transition: all 0.3s ease;
+			}
+			.btn-success:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+			}
+			.form-group {
+				margin-bottom: 20px;
+			}
+		</style>
 	</head>
 
 	<body class="gray-bg">
@@ -37,10 +83,10 @@
 				<h3>后台管理系统</h3>
 				<form class="m-t" role="form" method="post" action="{:U('Admin/Login/login')}" id="LoginForm">
 					<div class="form-group">
-						<input type="text" id="username" name="username" class="form-control" placeholder="用户名" required>
+						<input type="text" id="username" name="username" class="form-control" placeholder="请输入用户名" required>
 					</div>
 					<div class="form-group">
-						<input type="password" id="password" name="password" class="form-control" placeholder="密码" required>
+						<input type="password" id="password" name="password" class="form-control" placeholder="请输入密码" required>
 					</div>
 					<button type="submit" class="btn btn-success block full-width m-b">登 录</button>
 				</form>
