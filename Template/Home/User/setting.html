@@ -18,6 +18,7 @@
     <script src="/images/js/sizeChange.js"></script>
     <title>用户设置</title>
     <style>
+        :root { --brand: linear-gradient(135deg, #667eea, #764ba2); --primary-color: #667eea; }
         .center {
             position: absolute;
             top: 50%;
@@ -38,9 +39,9 @@
             text-align: center
         }
         .spinner>div {
-            width: 30px
+            width: 30px;
             height: 30px;
-            background-color: #fbac0f;
+            background-color: #667eea;
             border-radius: 100%;
             display: inline-block;
             -webkit-animation: bouncedelay 1.4s infinite ease-in-out;
@@ -75,7 +76,7 @@
             }
         }
         .am-list-item,.am-list-body {background: transparent !important; border: 0 !important;}
-        .am-list-item {border-bottom: 1px #efeae8 solid !important;}
+        .am-list-item {border-bottom: 1px #f0f2f5 solid !important;}
         .font16Color63 { font-size: .22rem !important;color: #4c4743 !important;}
         .btnbox {margin-top: .35rem;}
         .btnbox .btn {
@@ -86,15 +87,24 @@
             font-size: .30rem;
             color: #fff;
             text-align: center;
-            background: #d53434;
-            background-image: none;
-            background-image: -webkit-gradient(linear,0% 0,0% 100%,from(#e54d4d),to(#cf2c2c));
-            border-radius: .06rem;
+            background: var(--brand);
+            border-radius: .12rem;
             border: 0;
             cursor: pointer;
-            border: 0;
             width: 100%;
-            box-shadow: 0 .05rem .1rem rgba(0,0,0,0.1);
+            box-shadow: 0 .08rem .16rem rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btnbox .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .12rem .24rem rgba(102, 126, 234, 0.4);
+        }
+        body {
+            background: #f6f7fb !important;
+        }
+        .nav {
+            background: var(--brand);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
     </style>
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/Home/css/main.f2823a566.css">
@@ -104,19 +114,25 @@
 <style>
 .set_main {
     padding: .2rem;
+    max-width: 600px;
+    margin: 0 auto;
 }
 .set_nav {
     padding-bottom: .2rem;
 }
 .set_nav ul {
     margin-bottom: .2rem;
-    border: 1px #e5e1df solid;
-    border-radius: .1rem;
-    background: #fdfbfa;
+    border: 1px solid #f0f2f5;
+    border-radius: .16rem;
+    background: #fff;
     padding: 0 .22rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 .set_nav ul li {
-    border-bottom: 1px #efeae8 solid;
+    border-bottom: 1px #f0f2f5 solid;
+}
+.set_nav ul li:last-child {
+    border-bottom: none;
 }
 .set_nav ul li a.t1 {
     background-position: 0 0;
@@ -126,11 +142,16 @@
     height: .86rem;
     line-height: .86rem;
     font-size: .28rem;
-    color: #4c4743;
+    color: #333;
     padding-left: .56rem;
     background: url(/tu/set_ico.png) left top no-repeat;
     background-size: .36rem 8rem;
     position: relative;
+    transition: all 0.3s ease;
+}
+.set_nav ul li a:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+    color: var(--primary-color);
 }
 .set_nav ul li a:after {
     display: block;
@@ -162,7 +183,7 @@
     font-weight: normal;
 }
 </style>
-<body style="padding:0;margin:0;background: #efeae8;">
+<body style="padding:0;margin:0;">
     <div class="nav">
         <h3>用户设置</h3>
         <i class="iconfont icon-40" onclick="window.location.href='/Home/User/index.html'"></i>

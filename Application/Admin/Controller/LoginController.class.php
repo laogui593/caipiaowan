@@ -17,6 +17,15 @@ class LoginController extends BaseController{
 				$username = I('username');
 				$password = md5(I('password'));
 				$remember = I('remember');
+				
+				// 验证输入
+				if(empty($username)){
+					$this->error('用户名不能为空');
+				}
+				if(empty(I('password'))){
+					$this->error('密码不能为空');
+				}
+				
 				$res = M('admin')->where("username = '{$username}' && password = '{$password}' && status = 1")->find();
 				if($res){
 					if($remember){
@@ -31,7 +40,7 @@ class LoginController extends BaseController{
 					M('admin')->where("id = {$res['id']}")->save($map);
 					$this->success('登录成功,跳转中~',U('Admin/Index/index'),1);
 				}else{
-					$this->error('用户名或密码错误');
+					$this->error('用户名或密码错误，请检查后重试');
 				}
 			}
 		}

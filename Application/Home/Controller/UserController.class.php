@@ -913,6 +913,14 @@ class UserController extends BaseController{
 			$phone = I('phone');
 			$code = I('code');
 			
+			// 验证输入
+			if(empty($phone)){
+				$this->error('手机号码不能为空');
+			}
+			if(empty($code)){
+				$this->error('验证码不能为空');
+			}
+			
 			//查询是否有验证码信息
 			$ressms = M('smscode')->where(array('username'=>$userinfo['username'],'phone'=>$phone,'code'=>$code))->find();
 		
@@ -933,9 +941,11 @@ class UserController extends BaseController{
 						$this->error('绑定失败，请联系客服');
 					}
 				}else{
-					$this->error('验证码已过期，请重新获取');
+					$this->error('验证码已使用，请重新获取');
 				}
 				
+			}else{
+				$this->error('验证码错误或已过期，请重新获取');
 			}
 			
 		}
