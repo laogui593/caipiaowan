@@ -200,7 +200,6 @@ class IndexController extends BaseController
             $password1 = trim(I('password1'));
             $txpassword = trim(I('txpassword'));
             $t_id = trim(I('t_id'));
-            $code = trim(I('code'));
 
 
             if (preg_match('/[\\x{4e00}-\\x{9fa5}]/u', $username) > 0) {
