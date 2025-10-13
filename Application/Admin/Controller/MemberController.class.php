@@ -202,7 +202,7 @@ class MemberController extends BaseController{
 		}
 
 		$list_new = $this->_arraysort($list,'t_account');
-		$list_slice = array_slice($list_new, $page->firstRow, $page->listRows);
+		$list_slice = array_slice($list_new, (int)$page->firstRow, (int)$page->listRows);
 
 		$this->assign('show',$show);
 		$this->assign('list',$list_slice);
@@ -460,7 +460,7 @@ class MemberController extends BaseController{
 			
 		}
 		$list_new = $this->_arraysort($list,'sum_del');
-		$list_slice = array_slice($list_new, $page->firstRow, $page->listRows);
+		$list_slice = array_slice($list_new, (int)$page->firstRow, (int)$page->listRows);
 
 		$this->assign('show',$show);
 		$this->assign('username',$username);
@@ -472,7 +472,7 @@ class MemberController extends BaseController{
 	}
 
 	public function pushjs_dlrate(){
-		$data = I();
+		$data = I('post.');
 		$res = M('user')->where("id = {$data['uid']}")->save(array("dl_rate"=>$data['rate']));
 	}
 
@@ -688,7 +688,6 @@ class MemberController extends BaseController{
 
 		$this->assign('show',$show);
 		$this->assign('list',$list);
-		$this->assign('nickname',$nickname);
 		$this->display();
 	}
 
@@ -718,6 +717,7 @@ class MemberController extends BaseController{
 			'add_time' => time()
 		);
 		$fs_date['water'] = 0;
+		$fs_water = array('pkft' => 0, 'ssc' => 0, 'pcdd' => 0);
 
 		foreach ($list as $key => $value) {
 			$fs_date['water'] += $value['del_points'];
@@ -935,7 +935,7 @@ class MemberController extends BaseController{
 			}
 		}
 		$list_new = $this->_arraysort($list,'sum_del');
-		$list_slice = array_slice($list_new, $page->firstRow, $page->listRows);
+		$list_slice = array_slice($list_new, (int)$page->firstRow, (int)$page->listRows);
 
 		$this->assign('show',$show);
 		$this->assign('username',$username);
@@ -947,7 +947,7 @@ class MemberController extends BaseController{
 	}
 
 	public function agent_fh_action(){
-		$data = I();
+		$data = I('post.');
 		$t_info = M('user')->where("id = {$data['uid']}")->find();
 		$data['username'] = $t_info['username'];
 		$data['nickname'] = $t_info['nickname'];

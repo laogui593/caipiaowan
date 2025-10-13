@@ -133,7 +133,7 @@ class MemberController extends BaseController{
 		}
 
 		$list_new = $this->_arraysort($list,'t_account');
-		$list_slice = array_slice($list_new, $page->firstRow, $page->listRows);
+		$list_slice = array_slice($list_new, (int)$page->firstRow, (int)$page->listRows);
 
 		$this->assign('show',$show);
 		$this->assign('list',$list_slice);
@@ -390,7 +390,7 @@ class MemberController extends BaseController{
 			
 		}
 		$list_new = $this->_arraysort($list,'sum_del');
-		$list_slice = array_slice($list_new, $page->firstRow, $page->listRows);
+		$list_slice = array_slice($list_new, (int)$page->firstRow, (int)$page->listRows);
 
 		$this->assign('show',$show);
 		$this->assign('username',$username);
@@ -402,7 +402,7 @@ class MemberController extends BaseController{
 	}
 
 	public function pushjs_dlrate(){
-		$data = I();
+		$data = I('post.');
 		$res = M('user')->where("id = {$data['uid']}")->save(array("dl_rate"=>$data['rate']));
 	}
 
@@ -503,7 +503,6 @@ class MemberController extends BaseController{
 
 		$this->assign('show',$show);
 		$this->assign('list',$list);
-		$this->assign('nickname',$nickname);
 		$this->display();
 	}
 
@@ -538,6 +537,7 @@ class MemberController extends BaseController{
 		$fs_date['water'] = 0;
 
 		$t_userinfo = M('user')->field('pkft_fs,ssc_fs,pcdd_fs,k3_fs,yong')->where("id = {$aid}")->find();
+		$fs_water = array('pkft' => 0, 'ssc' => 0, 'k3' => 0, 'pcdd' => 0);
 
 		foreach ($list as $key => $value) {
 			$fs_date['water'] += $value['del_points'];
@@ -663,7 +663,7 @@ class MemberController extends BaseController{
 	public function fs_set(){
 		$uid = session('agent')['id'];
 		if(IS_POST){
-			$data = I();
+			$data = I('post.');
 			$res = M('user')->where("id = {$uid}")->save($data);
 			
 			if ($res) {
