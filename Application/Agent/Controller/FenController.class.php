@@ -188,7 +188,7 @@ class FenController extends BaseController{
                     $info = $upload->upload();
 
                     if ($info) {
-                        $img_url = '/carousel/kefu/' . $info[file0][savepath] . $info[file0][savename];//如果上传成功则完成路径拼接
+                        $img_url = '/carousel/kefu/' . $info['file0']['savepath'] . $info['file0']['savename'];//如果上传成功则完成路径拼接
                     } else {
                         $this->error($upload->getError());//否则就是上传错误，显示错误原因
                     }
@@ -248,7 +248,7 @@ class FenController extends BaseController{
                     $info = $upload->upload();
 
                     if ($info) {
-                        $img_url = '/carousel/kefu/' . $info[file0][savepath] . $info[file0][savename];//如果上传成功则完成路径拼接
+                        $img_url = '/carousel/kefu/' . $info['file0']['savepath'] . $info['file0']['savename'];//如果上传成功则完成路径拼接
                     } else {
                         $this->error($upload->getError());//否则就是上传错误，显示错误原因
                     }
