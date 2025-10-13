@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>{:C('sitename')}</title>
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no,email=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+    <META HTTP-EQUIV="Expires" CONTENT="0">
+    
+    <style>
+        /* ========== 全局样式重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ========== 顶部用户信息栏 ========== */
+        .top-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 3px solid #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .user-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 20px;
+            border-radius: 25px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        /* ========== 主容器 ========== */
+        .main-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        /* ========== 开奖动画区域 ========== */
+        .game-animation-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: fadeInUp 0.6s ease;
+            overflow: hidden;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .game-canvas-wrapper {
+            position: relative;
+            background: #2d3748;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            aspect-ratio: 16 / 9; /* 保持16:9比例 */
+        }
+        
+        #gameCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            object-fit: contain; /* 保持比例填充 */
+        }
+        
+        /* ========== 选号投注卡片 ========== */
+        .betting-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .bet-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .bet-tab {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .bet-tab:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .bet-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .bet-content {
+            display: none;
+        }
+        
+        .bet-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .position-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .position-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            color: #2d3748;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .position-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .position-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+        }
+        
+        .bet-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 12px;
+        }
+        
+        .bet-options-grid.dxds-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .bet-option {
+            aspect-ratio: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            background: white;
+            color: #2d3748;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bet-option:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .bet-option:active {
+            transform: scale(0.95);
+        }
+        
+        .bet-option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .bet-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .bet-big { border-color: #fee140; color: #d35400; }
+        .bet-big.selected { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        
+        .bet-small { border-color: #4facfe; color: #0652DD; }
+        .bet-small.selected { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        
+        .bet-odd { border-color: #fa709a; color: #900C3F; }
+        .bet-odd.selected { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        
+        .bet-even { border-color: #43e97b; color: #009432; }
+        .bet-even.selected { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        
+        .bet-dragon { border-color: #f5576c; color: #900C3F; }
+        .bet-dragon.selected { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        
+        .bet-tiger { border-color: #667eea; color: #330867; }
+        .bet-tiger.selected { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        .longhu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .longhu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+        }
+        
+        .longhu-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            min-width: 80px;
+        }
+        
+        .longhu-options {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        .longhu-options .bet-option {
+            flex: 1;
+            aspect-ratio: 2 / 1;
+        }
+        
+        /* ========== 开奖历史记录卡片 ========== */
+        .history-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: fadeInUp 0.7s ease;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title::before {
+            content: '';
+            width: 8px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+        
+        .history-table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .history-table thead th:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+        
+        .history-table thead th:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .history-table tbody tr {
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .history-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .history-table tbody td {
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #2d3748;
+        }
+        
+        .number-ball {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            border-radius: 50%;
+            margin: 0 3px;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: bounce 0.5s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .number-ball.num-1, .number-ball.num-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .number-ball.num-3, .number-ball.num-4 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .number-ball.num-5, .number-ball.num-6 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .number-ball.num-7, .number-ball.num-8 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .number-ball.num-9, .number-ball.num-10 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        
+        .result-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 3px;
+        }
+        
+        .tag-big { background: #fee140; color: #d35400; }
+        .tag-small { background: #4facfe; color: #0652DD; }
+        .tag-odd { background: #fa709a; color: #900C3F; }
+        .tag-even { background: #43e97b; color: #009432; }
+        .tag-dragon { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .tag-tiger { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        
+        /* ========== 侧边导航栏 ========== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 999;
+            animation: slideInLeft 0.5s ease;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%) translateY(-50%);
+            }
+            to {
+                transform: translateX(0) translateY(-50%);
+            }
+        }
+        
+        .sidebar-item {
+            width: 60px;
+            height: 60px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0 15px 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #2d3748;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .sidebar-item:hover {
+            width: 75px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 6px 6px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .sidebar-icon {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        /* ========== 投注浮动按钮 ========== */
+        .bet-float-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .bet-info {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .bet-count {
+            color: #667eea;
+            font-size: 20px;
+        }
+        
+        .bet-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-clear {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 35px;
+            font-size: 16px;
+        }
+        
+        /* ========== 投注弹窗 ========== */
+        .bet-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .bet-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 2001;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.4s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .modal-close {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            transform: rotate(90deg);
+            background: #c0392b;
+        }
+        
+        .bet-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .bet-amount-input {
+            margin: 20px 0;
+        }
+        
+        .amount-display {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .amount-chips {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .chip {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .chip-5 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .chip-10 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .chip-50 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .chip-100 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .chip-500 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .chip-1000 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        .chip:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chip:active {
+            transform: scale(0.95);
+        }
+        
+        .chip-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .modal-actions .btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+        }
+        
+        /* ========== 响应式设计 ========== */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 80px; /* 为底部浮动栏留空间 */
+            }
+            
+            .top-header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px 15px;
+            }
+            
+            .user-avatar {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .user-name {
+                font-size: 14px;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .btn {
+                padding: 6px 16px;
+                font-size: 13px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+                margin: 15px auto;
+            }
+            
+            .game-animation-card {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .betting-card {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+            
+            .bet-tabs {
+                gap: 8px;
+            }
+            
+            .bet-tab {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+            
+            .position-selector {
+                gap: 6px;
+            }
+            
+            .position-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .bet-options-grid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                gap: 10px;
+            }
+            
+            .bet-option {
+                font-size: 16px;
+            }
+            
+            .longhu-item {
+                padding: 12px;
+                gap: 10px;
+            }
+            
+            .longhu-label {
+                font-size: 14px;
+                min-width: 60px;
+            }
+            
+            .longhu-options {
+                gap: 10px;
+            }
+            
+            .game-canvas-wrapper {
+                aspect-ratio: 16 / 9; /* 移动端保持16:9 */
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .history-card {
+                padding: 20px 15px;
+                margin-bottom: 100px; /* 为底部浮动栏留空间 */
+            }
+            
+            .card-title {
+                font-size: 18px;
+            }
+            
+            .history-table {
+                font-size: 11px;
+            }
+            
+            .history-table thead th,
+            .history-table tbody td {
+                padding: 10px 5px;
+            }
+            
+            .number-ball {
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                font-size: 11px;
+                margin: 0 2px;
+            }
+            
+            .result-tag {
+                padding: 3px 8px;
+                font-size: 10px;
+                margin: 2px 1px;
+            }
+            
+            .bet-float-bar {
+                padding: 12px 15px;
+            }
+            
+            .bet-info {
+                font-size: 14px;
+            }
+            
+            .bet-count {
+                font-size: 18px;
+            }
+            
+            .bet-actions {
+                gap: 10px;
+            }
+            
+            .btn-submit {
+                padding: 10px 25px;
+                font-size: 14px;
+            }
+            
+            .bet-modal {
+                padding: 25px 20px;
+                width: 95%;
+            }
+            
+            .modal-title {
+                font-size: 18px;
+            }
+            
+            .amount-chips {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .chip-value {
+                font-size: 18px;
+            }
+            
+            .amount-display {
+                padding: 12px;
+                font-size: 20px;
+            }
+        }
+        
+        /* 更小的屏幕优化 */
+        @media (max-width: 480px) {
+            .game-canvas-wrapper {
+                aspect-ratio: 4 / 3; /* 小屏幕改为4:3 */
+            }
+            
+            .history-table {
+                font-size: 10px;
+            }
+            
+            .number-ball {
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+                font-size: 10px;
+                margin: 0 1px;
+            }
+            
+            .result-tag {
+                display: block;
+                margin: 2px 0;
+            }
+        }
+        
+        /* ========== 加载动画 ========== */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部用户信息栏 - 仅登录后显示 -->
+    <if condition="$userinfo">
+        <div class="top-header">
+            <if condition="C('is_weixin') eq 1 && $is_weixin">
+                <div class="user-info">
+                    <img src="{$userinfo.headimgurl}" class="user-avatar" alt="用户头像" />
+                    <span class="user-name">{$userinfo.nickname}</span>
+                </div>
+                <div class="action-buttons">
+                    <a href="/Home/Index/bind?id={$userinfo.id}" class="btn btn-primary">绑定账号</a>
+                    <a href="/Home/Fen/addpage" class="btn btn-success">上分</a>
+                    <a href="/Home/Fen/xiapage" class="btn btn-warning">下分</a>
+                </div>
+            <else/>
+                <div class="user-info">
+                    <img src="{$userinfo.headimgurl}" class="user-avatar" alt="用户头像" />
+                    <span class="user-name">{$userinfo.nickname}</span>
+                </div>
+                <div class="action-buttons">
+                    <a href="/Home/Fen/addpage" class="btn btn-success">上分</a>
+                    <a href="/Home/Fen/xiapage" class="btn btn-warning">下分</a>
+                    <a href="/Home/Index/logout" class="btn btn-secondary">退出登录</a>
+                </div>
+            </if>
+        </div>
+    </if>
+
+    <!-- 主内容区 -->
+    <div class="main-container">
+        <!-- 开奖动画卡片 -->
+        <div class="game-animation-card">
+            <div class="game-canvas-wrapper">
+                <canvas id="gameCanvas" width="1136" height="640"></canvas>
+            </div>
+        </div>
+
+        <!-- 选号投注区 - 仅登录后显示 -->
+        <if condition="$userinfo">
+        <div class="betting-card">
+            <h2 class="card-title">快速投注</h2>
+            
+            <!-- 投注玩法标签 -->
+            <div class="bet-tabs">
+                <button class="bet-tab active" data-tab="guanya">冠亚和</button>
+                <button class="bet-tab" data-tab="number">号码</button>
+                <button class="bet-tab" data-tab="dxds">大小单双</button>
+                <button class="bet-tab" data-tab="longhu">龙虎</button>
+            </div>
+            
+            <!-- 冠亚和玩法 -->
+            <div class="bet-content active" data-content="guanya">
+                <div class="bet-options-grid">
+                    <button class="bet-option" data-value="3">3</button>
+                    <button class="bet-option" data-value="4">4</button>
+                    <button class="bet-option" data-value="5">5</button>
+                    <button class="bet-option" data-value="6">6</button>
+                    <button class="bet-option" data-value="7">7</button>
+                    <button class="bet-option" data-value="8">8</button>
+                    <button class="bet-option" data-value="9">9</button>
+                    <button class="bet-option" data-value="10">10</button>
+                    <button class="bet-option" data-value="11">11</button>
+                    <button class="bet-option" data-value="12">12</button>
+                    <button class="bet-option" data-value="13">13</button>
+                    <button class="bet-option" data-value="14">14</button>
+                    <button class="bet-option" data-value="15">15</button>
+                    <button class="bet-option" data-value="16">16</button>
+                    <button class="bet-option" data-value="17">17</button>
+                    <button class="bet-option" data-value="18">18</button>
+                    <button class="bet-option" data-value="19">19</button>
+                </div>
+            </div>
+            
+            <!-- 号码玩法 -->
+            <div class="bet-content" data-content="number">
+                <div class="position-selector">
+                    <button class="position-btn active" data-pos="1">冠军</button>
+                    <button class="position-btn" data-pos="2">亚军</button>
+                    <button class="position-btn" data-pos="3">第三名</button>
+                    <button class="position-btn" data-pos="4">第四名</button>
+                    <button class="position-btn" data-pos="5">第五名</button>
+                    <button class="position-btn" data-pos="6">第六名</button>
+                    <button class="position-btn" data-pos="7">第七名</button>
+                    <button class="position-btn" data-pos="8">第八名</button>
+                    <button class="position-btn" data-pos="9">第九名</button>
+                    <button class="position-btn" data-pos="10">第十名</button>
+                </div>
+                <div class="bet-options-grid">
+                    <button class="bet-option" data-value="1">1</button>
+                    <button class="bet-option" data-value="2">2</button>
+                    <button class="bet-option" data-value="3">3</button>
+                    <button class="bet-option" data-value="4">4</button>
+                    <button class="bet-option" data-value="5">5</button>
+                    <button class="bet-option" data-value="6">6</button>
+                    <button class="bet-option" data-value="7">7</button>
+                    <button class="bet-option" data-value="8">8</button>
+                    <button class="bet-option" data-value="9">9</button>
+                    <button class="bet-option" data-value="10">10</button>
+                </div>
+            </div>
+            
+            <!-- 大小单双玩法 -->
+            <div class="bet-content" data-content="dxds">
+                <div class="position-selector">
+                    <button class="position-btn active" data-pos="1">冠军</button>
+                    <button class="position-btn" data-pos="2">亚军</button>
+                    <button class="position-btn" data-pos="3">第三名</button>
+                    <button class="position-btn" data-pos="4">第四名</button>
+                    <button class="position-btn" data-pos="5">第五名</button>
+                    <button class="position-btn" data-pos="6">第六名</button>
+                    <button class="position-btn" data-pos="7">第七名</button>
+                    <button class="position-btn" data-pos="8">第八名</button>
+                    <button class="position-btn" data-pos="9">第九名</button>
+                    <button class="position-btn" data-pos="10">第十名</button>
+                </div>
+                <div class="bet-options-grid dxds-grid">
+                    <button class="bet-option bet-big" data-value="大">大</button>
+                    <button class="bet-option bet-small" data-value="小">小</button>
+                    <button class="bet-option bet-odd" data-value="单">单</button>
+                    <button class="bet-option bet-even" data-value="双">双</button>
+                </div>
+            </div>
+            
+            <!-- 龙虎玩法 -->
+            <div class="bet-content" data-content="longhu">
+                <div class="longhu-list">
+                    <div class="longhu-item">
+                        <span class="longhu-label">1 vs 10</span>
+                        <div class="longhu-options">
+                            <button class="bet-option bet-dragon" data-value="龙">龙</button>
+                            <button class="bet-option bet-tiger" data-value="虎">虎</button>
+                        </div>
+                    </div>
+                    <div class="longhu-item">
+                        <span class="longhu-label">2 vs 9</span>
+                        <div class="longhu-options">
+                            <button class="bet-option bet-dragon" data-value="龙">龙</button>
+                            <button class="bet-option bet-tiger" data-value="虎">虎</button>
+                        </div>
+                    </div>
+                    <div class="longhu-item">
+                        <span class="longhu-label">3 vs 8</span>
+                        <div class="longhu-options">
+                            <button class="bet-option bet-dragon" data-value="龙">龙</button>
+                            <button class="bet-option bet-tiger" data-value="虎">虎</button>
+                        </div>
+                    </div>
+                    <div class="longhu-item">
+                        <span class="longhu-label">4 vs 7</span>
+                        <div class="longhu-options">
+                            <button class="bet-option bet-dragon" data-value="龙">龙</button>
+                            <button class="bet-option bet-tiger" data-value="虎">虎</button>
+                        </div>
+                    </div>
+                    <div class="longhu-item">
+                        <span class="longhu-label">5 vs 6</span>
+                        <div class="longhu-options">
+                            <button class="bet-option bet-dragon" data-value="龙">龙</button>
+                            <button class="bet-option bet-tiger" data-value="虎">虎</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </if>
+
+        <!-- 开奖历史记录 -->
+        <div class="history-card">
+            <h2 class="card-title">开奖历史记录</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>期号</th>
+                        <th>开奖号码</th>
+                        <th>冠亚和</th>
+                        <th>龙虎</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist name="list" id="vo">
+                        <tr>
+                            <td><strong>{$vo.periodnumber}</strong></td>
+                            <td>
+                                <?php
+                                    $number = unserialize($vo['number']);
+                                    $lh = unserialize($vo['lh']);
+                                ?>
+                                <volist name="number" id="t" key="k">
+                                    <span class="number-ball num-{$t}">{$t}</span>
+                                </volist>
+                            </td>
+                            <td>
+                                <span class="result-tag">{$vo.tema}</span>
+                                <span class="result-tag tag-{$vo.tema_dx}">{$vo.tema_dx}</span>
+                                <span class="result-tag tag-{$vo.tema_ds}">{$vo.tema_ds}</span>
+                                <span class="result-tag">{$vo.zx}</span>
+                                <span class="result-tag">{$vo.tema_dw}</span>
+                            </td>
+                            <td>
+                                <span class="result-tag tag-{$lh[0]}">{$lh[0]}</span>
+                                <span class="result-tag tag-{$lh[1]}">{$lh[1]}</span>
+                                <span class="result-tag tag-{$lh[2]}">{$lh[2]}</span>
+                                <span class="result-tag tag-{$lh[3]}">{$lh[3]}</span>
+                                <span class="result-tag tag-{$lh[4]}">{$lh[4]}</span>
+                            </td>
+                        </tr>
+                    </volist>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 侧边导航栏 -->
+    <div class="sidebar">
+        <a href="/Home/Run/index" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <div>大厅</div>
+        </a>
+        <a href="javascript:void(0);" onclick="location.reload();" class="sidebar-item">
+            <div class="sidebar-icon">🔄</div>
+            <div>刷新</div>
+        </a>
+        <a href="{:U('Home/Run/record')}?t=1" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <div>记录</div>
+        </a>
+        <a href="{:U('Home/Run/kjxyft')}" class="sidebar-item">
+            <div class="sidebar-icon">🎲</div>
+            <div>开奖</div>
+        </a>
+        <a href="{:U('Home/Run/ruleft')}" class="sidebar-item">
+            <div class="sidebar-icon">📖</div>
+            <div>规则</div>
+        </a>
+        <a href="{:U('Home/Run/kefu_wx')}" class="sidebar-item">
+            <div class="sidebar-icon">💬</div>
+            <div>客服</div>
+        </a>
+        <a href="/Home/User/index" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <div>我的</div>
+        </a>
+    </div>
+
+    <!-- 投注浮动栏 -->
+    <div class="bet-float-bar">
+        <div class="bet-info">
+            已选：<span class="bet-count" id="zhicwl-sqjdrt">0</span> 注
+        </div>
+        <div class="bet-actions">
+            <button class="btn btn-clear zhicwl-fxalpr-an1">清空所选</button>
+            <button class="btn btn-submit zhicwl-fxalpr-an3">确定下单</button>
+        </div>
+    </div>
+
+    <!-- 投注弹窗遮罩层 - 仅登录后显示 -->
+    <if condition="$userinfo">
+    <div class="bet-modal-overlay zhicwl-cailgao"></div>
+
+    <!-- 投注确认弹窗 -->
+    <div class="bet-modal zhicwl-qdxldfp">
+        <div class="modal-header">
+            <h3 class="modal-title">确认下注</h3>
+            <button class="modal-close zhicwl-jdlptr">×</button>
+        </div>
+
+        <div class="bet-summary">
+            <div style="font-size: 14px; margin-bottom: 10px;">投注信息</div>
+            <div style="font-size: 18px;">
+                共 <span id="zhicwl-tzjev">0</span> 注，
+                金额 <span id="zhicwl-jgr">0</span> 元
+            </div>
+        </div>
+
+        <div class="bet-amount-input">
+            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #2d3748;">
+                选择下注金额
+            </label>
+            <div class="amount-display">
+                <input id="my_money" type="text" value="¥0.00" readonly 
+                    style="border: none; background: none; width: 100%; text-align: center; font-size: 24px; font-weight: 700;">
+            </div>
+            
+            <div class="amount-chips">
+                <button class="chip chip-5">
+                    <span class="chip-value">5</span>
+                </button>
+                <button class="chip chip-10">
+                    <span class="chip-value">10</span>
+                </button>
+                <button class="chip chip-50">
+                    <span class="chip-value">50</span>
+                </button>
+                <button class="chip chip-100">
+                    <span class="chip-value">100</span>
+                </button>
+                <button class="chip chip-500">
+                    <span class="chip-value">500</span>
+                </button>
+                <button class="chip chip-1000">
+                    <span class="chip-value">1000</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary zhicwl-qxldpr-an1">取消</button>
+            <button class="btn btn-primary zhicwl-qxldpr-an2">确认下注</button>
+            </div>
+        </div>
+    </if>
+
+    <!-- JavaScript -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    
+    <!-- 游戏动画脚本 -->
+    <if condition="$type eq 幸运飞艇">
+        <script src="__PUBLIC__/main/mbase.js"></script>
+        <script src="__PUBLIC__/main/cocos2d.js"></script>
+    <else/>
+        <script src="__PUBLIC__/main/ft/mbase.js"></script>
+        <script src="__PUBLIC__/main/ft/cocos2d.js"></script>
+    </if>
+
+    <!-- 原有投注功能脚本 -->
+    <script src="/Template/Home/Run/js/zhicwl-f.js"></script>
+
+    <!-- 高端UI交互脚本 -->
+    <script>
+    $(document).ready(function() {
+        // 检查登录状态
+        var isLoggedIn = <?php echo $userinfo ? 'true' : 'false'; ?>;
+        
+        // 选中的投注项
+        var selectedBets = [];
+        
+        // 玩法切换
+        $('.bet-tab').on('click', function() {
+            var tab = $(this).data('tab');
+            $('.bet-tab').removeClass('active');
+            $(this).addClass('active');
+            $('.bet-content').removeClass('active');
+            $('.bet-content[data-content="' + tab + '"]').addClass('active');
+        });
+        
+        // 位置切换
+        $('.position-btn').on('click', function() {
+            $(this).siblings().removeClass('active');
+            $(this).addClass('active');
+        });
+        
+        // 选号/取消选号
+        $('.bet-option').on('click', function() {
+            // 检查登录
+            if (!isLoggedIn) {
+                window.location.href = '/Home/Index/login';
+                return false;
+            }
+            
+            var $this = $(this);
+            var value = $this.data('value');
+            var currentTab = $('.bet-tab.active').data('tab');
+            var position = $('.position-btn.active').data('pos') || '';
+            
+            // 切换选中状态
+            $this.toggleClass('selected');
+            
+            // 更新选中列表
+            var betKey = currentTab + '-' + position + '-' + value;
+            var index = selectedBets.indexOf(betKey);
+            
+            if ($this.hasClass('selected')) {
+                if (index === -1) {
+                    selectedBets.push(betKey);
+                }
+            } else {
+                if (index > -1) {
+                    selectedBets.splice(index, 1);
+                }
+            }
+            
+            // 更新底部显示
+            $('#zhicwl-sqjdrt').text(selectedBets.length);
+        });
+        
+        // 清空所选
+        $('.zhicwl-fxalpr-an1').on('click', function() {
+            if (!isLoggedIn) {
+                window.location.href = '/Home/Index/login';
+                return false;
+            }
+            $('.bet-option').removeClass('selected');
+            selectedBets = [];
+            $('#zhicwl-sqjdrt').text('0');
+        });
+        
+        // Canvas 自适应调整
+        function resizeCanvas() {
+            var canvas = document.getElementById('gameCanvas');
+            var wrapper = document.querySelector('.game-canvas-wrapper');
+            
+            if (canvas && wrapper) {
+                var wrapperWidth = wrapper.offsetWidth;
+                var wrapperHeight = wrapper.offsetHeight;
+                
+                // 获取原始画布尺寸比例 (1136 x 640)
+                var originalWidth = 1136;
+                var originalHeight = 640;
+                var originalRatio = originalWidth / originalHeight;
+                
+                // 计算新尺寸
+                var newWidth, newHeight;
+                var containerRatio = wrapperWidth / wrapperHeight;
+                
+                if (containerRatio > originalRatio) {
+                    // 容器更宽，以高度为基准
+                    newHeight = wrapperHeight;
+                    newWidth = newHeight * originalRatio;
+                } else {
+                    // 容器更高，以宽度为基准
+                    newWidth = wrapperWidth;
+                    newHeight = newWidth / originalRatio;
+                }
+                
+                // 居中显示
+                canvas.style.width = newWidth + 'px';
+                canvas.style.height = newHeight + 'px';
+                canvas.style.left = ((wrapperWidth - newWidth) / 2) + 'px';
+                canvas.style.top = ((wrapperHeight - newHeight) / 2) + 'px';
+            }
+        }
+        
+        // 初始化调整
+        setTimeout(resizeCanvas, 100);
+        
+        // 窗口大小改变时重新调整
+        $(window).on('resize orientationchange', resizeCanvas);
+        
+        // 筹码点击效果
+        $('.chip').on('click', function() {
+            $(this).addClass('active');
+            
+            // 添加波纹效果
+            var ripple = $('<span style="position:absolute;width:100%;height:100%;background:rgba(255,255,255,0.5);border-radius:50%;transform:scale(0);animation:ripple 0.6s ease-out;"></span>');
+            $(this).append(ripple);
+            
+            setTimeout(function() {
+                ripple.remove();
+            }, 600);
+            
+            setTimeout(() => {
+                $(this).removeClass('active');
+            }, 300);
+        });
+        
+        // 弹窗显示
+        $('.zhicwl-fxalpr-an3').on('click', function() {
+            $('.zhicwl-cailgao, .zhicwl-qdxldfp').fadeIn(300);
+            $('.zhicwl-qdxldfp').css('display', 'block');
+        });
+        
+        // 弹窗关闭
+        $('.zhicwl-jdlptr, .zhicwl-qxldpr-an1, .zhicwl-cailgao').on('click', function() {
+            $('.zhicwl-cailgao, .zhicwl-qdxldfp').fadeOut(300);
+        });
+        
+        // 阻止弹窗内部点击关闭
+        $('.bet-modal').on('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // 游戏动画回调
+        var acontainer = $('#acontainer');
+        var hasData = false;
+
+        window.AddList = function(data) {
+            if(data.length > 0) {
+                hasData = true;
+                acontainer.html(data[0].data);
+                acontainer.show();
+            }
+        }
+        
+        window.beforeStartRunning = function() {
+            acontainer.hide();
+        }
+
+        window.afterEndRunning = function() {
+            if(hasData) acontainer.show();
+        }
+    });
+    
+    // CSS动画关键帧
+    $('<style>').text(`
+        @keyframes ripple {
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    `).appendTo('head');
+    </script>
+</body>
+</html>

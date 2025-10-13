@@ -1,0 +1,5 @@
+*.tar.gz
+*.zip
+xnwan.tar.gz
+workerman_server.php
+*.log

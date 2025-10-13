@@ -1,0 +1,305 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <meta name="format-detection" content="telephone=no,email=no"/>
+    <title>历史走势 - <?php echo C('sitename');?></title>
+
+    <script src="/images/js/jquery-1.11.2.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei', sans-serif;
+            background: #f7f8fa;
+            color: #333;
+            padding-bottom: calc(60px + env(safe-area-inset-bottom));
+        }
+
+        /* 顶部导航栏 */
+        .nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 48px 16px 24px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
+        }
+        .nav h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        .nav::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+
+        /* 列表容器 */
+        .lottery_list2 {
+            padding: 16px 12px 12px;
+        }
+
+        /* 卡片项 */
+        .lottery_list2 .item {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .lottery_list2 .item:hover {
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+        .lottery_list2 .item:active {
+            transform: translateY(0);
+        }
+
+        .lottery_list2 .item a {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* 期数信息 */
+        .lottery_list2 .item .m {
+            font-size: 15px;
+            line-height: 24px;
+            margin-bottom: 12px;
+            padding-right: 90px;
+        }
+        .lottery_list2 .item .m b {
+            font-size: 16px;
+            color: #1a202c;
+            margin-right: 8px;
+            font-weight: 700;
+        }
+        .red {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+
+        /* 号码区域 */
+        .lottery_list2 .item .f {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .lottery_list2 .item .f b {
+            font-size: 15px;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .lottery_list2 .item .f .blue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .lottery_list2 .item .f .jh {
+            color: #a0aec0;
+            width: 20px;
+            height: 36px;
+            line-height: 36px;
+            font-size: 18px;
+            background: none;
+            box-shadow: none;
+        }
+
+        /* 走势按钮 */
+        .lottery_list2 .item .trend_btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #5a67d8;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .lottery_list2 .item .trend_btn::before {
+            content: "📈";
+            font-size: 14px;
+        }
+        .lottery_list2 .item .trend_btn:hover {
+            border-color: #5a67d8;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+        .empty-state::before {
+            content: "📊";
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* 响应式优化 */
+        @media (min-width: 768px) {
+            .lottery_list2 {
+                max-width: 640px;
+                margin: 0 auto;
+                padding: 24px 16px;
+            }
+            .lottery_list2 .item {
+                padding: 20px;
+            }
+            .nav h3 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <h3>历史走势</h3>
+    </div>
+
+    <div class="lottery_list2">
+        <?php if(is_array($kjlist)): $i = 0; $__LIST__ = $kjlist;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><div class="item">
+                <a href="<?php echo U('Home/Run/trend1', array('game' => $vo['game']));?>">
+                    <div class="m">
+                        <b><?php echo ($vo['game'] == 'bj28' ? '螞蟻收益' : '螞蟻收益'); ?></b>
+                        第<span class="red"><?php echo ($vo["periodnumber"]); ?></span>期
+                    </div>
+                    <div class="f">
+                        <b class="blue"><?php echo ($vo["numberOne"]); ?></b>
+                        <b class="jh">+</b>
+                        <b class="blue"><?php echo ($vo["numberTwo"]); ?></b>
+                        <b class="jh">+</b>
+                        <b class="blue"><?php echo ($vo["numberThree"]); ?></b>
+                        <b class="jh">=</b>
+                        <b class="blue"><?php echo ($vo["tema"]); ?></b>
+                    </div>
+                </a>
+                <a href="<?php echo U('Home/Run/trend2', array('game' => $vo['game']));?>" class="trend_btn">走势</a>
+            </div><?php endforeach; endif; else: echo "" ;endif; ?>
+        <?php if(empty($kjlist)): ?><div class="empty-state">
+                暂无走势数据
+            </div><?php endif; ?>
+    </div>
+
+
+<?php $a=2;?>
+<nav class="bottom-nav">
+    <a href="/index.php/Home/Shou/index" class="nav-item <?php echo ($a==1?'active':''); ?>">
+        <img src="/images/menu1<?php echo ($a==1?'':'_hui'); ?>.png" alt="首页">
+        <span>首页</span>
+    </a>
+    <a href="/index.php/Home/Run/index" class="nav-item <?php echo ($a==6?'active':''); ?>">
+        <img src="/images/pay.png" alt="产品">
+        <span>产品</span>
+    </a>
+    <a href="<?php echo C('zxkf');?>" class="nav-item">
+        <img src="/images/menu3.png" alt="客服">
+        <span>客服</span>
+    </a>
+    <a href="<?php echo U('Home/Run/trend');?>" class="nav-item <?php echo ($a==2?'active':''); ?>">
+        <img src="/images/menu2<?php echo ($a==2?'_red':''); ?>.png" alt="走势">
+        <span>走势</span>
+    </a>
+    <a href="<?php echo U('Home/User/index');?>" class="nav-item <?php echo ($a==5?'active':''); ?>">
+        <img src="/images/menu5<?php echo ($a==5?'_red':''); ?>.png" alt="我的">
+        <span>我的</span>
+    </a>
+    <div class="safe-area"></div>
+    <!-- iOS 安全区占位 -->
+</nav>
+
+<style>
+    /* 预留底部导航空间，包含安全区 */
+    body { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+
+    .bottom-nav {
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        height: 60px;
+        background: rgba(0,0,0,0.85);
+        border-top: 1px solid rgba(255,255,255,0.12);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        z-index: 2147483647; /* 提升层级，确保在一切覆盖层之上 */
+        pointer-events: auto;
+    }
+
+    .bottom-nav .nav-item {
+        flex: 1;
+        text-align: center;
+        text-decoration: none;
+        color: rgba(255,255,255,0.85);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 防止其他覆盖层抢占事件，保障导航可点 */
+    .bottom-nav, .bottom-nav * { pointer-events: auto; }
+
+    .bottom-nav .nav-item img {
+        width: 22px; height: 22px; display: block; margin-bottom: 2px;
+        filter: grayscale(100%) opacity(0.75);
+        pointer-events: none; /* 不拦截点击，事件交给 a */
+    }
+
+    .bottom-nav .nav-item:hover { color: #fff; }
+    .bottom-nav .nav-item.active { color: #fff; }
+    .bottom-nav .nav-item.active img { filter: none; }
+
+    /* iOS 安全区 */
+    .bottom-nav .safe-area {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        height: env(safe-area-inset-bottom);
+        height: constant(safe-area-inset-bottom);
+        background: rgba(0,0,0,0.85);
+        pointer-events: none; /* 安全区不拦截点击 */
+    }
+
+    /* 移除 .tips 的样式，避免覆盖底部导航导致无法点击 */
+</style>
+
+
+
+</body>
+
+</html>
