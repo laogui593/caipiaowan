@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>彩票系统 - 工具和文档索引</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .card h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card .icon {
+            font-size: 24px;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .card .links {
+            margin-top: 20px;
+        }
+        
+        .card a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px 4px 4px 0;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .card a:hover {
+            background: #5568d3;
+        }
+        
+        .card a.secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .card a.secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .urgent {
+            border-left: 4px solid #f44;
+        }
+        
+        .urgent h2 {
+            color: #f44;
+        }
+        
+        .tools {
+            border-left: 4px solid #667eea;
+        }
+        
+        .docs {
+            border-left: 4px solid #4caf50;
+        }
+        
+        .system {
+            border-left: 4px solid #ff9800;
+        }
+        
+        .footer {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎰 彩票系统 - 工具和文档索引</h1>
+            <p>快速访问系统工具、诊断工具和文档</p>
+        </div>
+        
+        <div class="grid">
+            <!-- 数据库权限修复 -->
+            <div class="card urgent">
+                <h2><span class="icon">🔧</span> 数据库权限修复</h2>
+                <p><strong>如果遇到数据库权限错误，从这里开始！</strong></p>
+                <p>快速诊断和修复 MySQL 用户权限问题，特别是 information_schema 访问权限。</p>
+                <div class="links">
+                    <a href="数据库权限修复.html">🚀 快速修复页面</a>
+                    <a href="fix_permissions.php">🔍 权限诊断工具</a>
+                    <a href="QUICKSTART_DATABASE_FIX.md" class="secondary">📖 快速指南</a>
+                </div>
+            </div>
+            
+            <!-- 系统检查 -->
+            <div class="card system">
+                <h2><span class="icon">✅</span> 系统检查工具</h2>
+                <p>检查系统配置、文件完整性、权限设置等。</p>
+                <div class="links">
+                    <a href="check_system.php">运行系统检查</a>
+                    <a href="test_handlers.php" class="secondary">测试处理器</a>
+                </div>
+            </div>
+            
+            <!-- 系统访问 -->
+            <div class="card tools">
+                <h2><span class="icon">🌐</span> 系统访问</h2>
+                <p>访问系统前台和后台管理界面。</p>
+                <div class="links">
+                    <a href="index.php">🏠 系统首页</a>
+                    <a href="index.php/Admin">🔐 后台登录</a>
+                </div>
+            </div>
+            
+            <!-- 数据库配置文档 -->
+            <div class="card docs">
+                <h2><span class="icon">📋</span> 数据库配置</h2>
+                <p>数据库配置说明、权限设置和常见问题解决。</p>
+                <div class="links">
+                    <a href="DATABASE_CONFIG.md">配置说明</a>
+                    <a href="数据库权限修复指南.md" class="secondary">修复指南(中文)</a>
+                    <a href="DATABASE_PERMISSION_FIX.md" class="secondary">Fix Guide(EN)</a>
+                </div>
+            </div>
+            
+            <!-- 部署文档 -->
+            <div class="card docs">
+                <h2><span class="icon">📚</span> 部署文档</h2>
+                <p>系统部署、配置和维护的完整指南。</p>
+                <div class="links">
+                    <a href="DEPLOY.md">部署文档</a>
+                    <a href="完整部署指南.md" class="secondary">完整部署指南</a>
+                    <a href="问题解决方案总结.md" class="secondary">问题解决总结</a>
+                </div>
+            </div>
+            
+            <!-- 其他文档 -->
+            <div class="card docs">
+                <h2><span class="icon">📖</span> 其他文档</h2>
+                <p>安全指南、多语言支持、导航结构等。</p>
+                <div class="links">
+                    <a href="SECURITY_GUIDE.md">安全指南</a>
+                    <a href="MULTILANG_GAME_GUIDE.md" class="secondary">多语言指南</a>
+                    <a href="NAVIGATION_STRUCTURE.md" class="secondary">导航结构</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>💡 提示</strong>: 如果遇到数据库权限问题，请先访问"数据库权限修复"工具。</p>
+            <p style="margin-top: 10px;">系统版本: ThinkPHP 3.2.3 | 最后更新: 2025-10-13</p>
+        </div>
+    </div>
+</body>
+</html>
