@@ -146,6 +146,7 @@ class IndexController extends BaseController
                 } else {
                     $redirect_uri = 'http://' . C('siteurl') . '/Home/Index/redirect_url';
                 }
+                $state = md5(uniqid(rand(), TRUE)); // 生成随机state参数用于安全验证
                 $result_index = $oauth->getOauthRedirect($redirect_uri, $state, 'snsapi_userinfo');
                 $this->display('Shou/index');
             } else {
@@ -375,7 +376,7 @@ class IndexController extends BaseController
 
     public function bind_action()
     {
-        $data = I();
+        $data = I('post.');
         $data['password'] = md5(I('password'));
         $res = M('user')->where("id={$data['id']}")->save($data);
         if ($res) {
