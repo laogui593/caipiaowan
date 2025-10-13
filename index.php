@@ -29,7 +29,7 @@ if (version_compare(PHP_VERSION, '5.3.0', '<')) {
 define('SITE_PATH', getcwd() . '/');
 
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
-define('APP_DEBUG',true);
+define('APP_DEBUG',false);  // 生产环境必须关闭调试模式
 define('VERSION','20180208');
 
 //生成目录

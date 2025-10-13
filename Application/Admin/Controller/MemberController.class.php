@@ -49,8 +49,11 @@ class MemberController extends BaseController{
 	}
 	
 	public function disable(){
-		$id = I('id');
-		$res = M('user')->where("id = $id")->setField('status',0);
+		$id = intval(I('id'));  // 安全：验证为整数
+		if (!$id) {
+			$this->error('参数错误');
+		}
+		$res = M('user')->where(['id' => $id])->setField('status',0);
 		if($res){
 			$this->success('禁用成功！');
 		}else{
@@ -59,8 +62,11 @@ class MemberController extends BaseController{
 	}
 
 	public function set_robot(){
-		$id = I('id');
-		$res = M('user')->where("id = $id")->setField('is_robot',1);
+		$id = intval(I('id'));  // 安全：验证为整数
+		if (!$id) {
+			$this->error('参数错误');
+		}
+		$res = M('user')->where(['id' => $id])->setField('is_robot',1);
 		if($res){
 			$this->success('设置成功！');
 		}else{
@@ -69,8 +75,11 @@ class MemberController extends BaseController{
 	}
 
 	public function cancel_robot(){
-		$id = I('id');
-		$res = M('user')->where("id = $id")->setField('is_robot',0);
+		$id = intval(I('id'));  // 安全：验证为整数
+		if (!$id) {
+			$this->error('参数错误');
+		}
+		$res = M('user')->where(['id' => $id])->setField('is_robot',0);
 		if($res){
 			$this->success('取消成功！');
 		}else{
@@ -79,8 +88,11 @@ class MemberController extends BaseController{
 	}
 
 	public function set_agent(){
-		$id = I('id');
-		$res = M('user')->where("id = $id")->setField('is_agent',1);
+		$id = intval(I('id'));  // 安全：验证为整数
+		if (!$id) {
+			$this->error('参数错误');
+		}
+		$res = M('user')->where(['id' => $id])->setField('is_agent',1);
 		if($res){
 			$this->success('设置代理成功！');
 		}else{
@@ -89,8 +101,11 @@ class MemberController extends BaseController{
 	}
 
 	public function cancel_agent(){
-		$id = I('id');
-		$res = M('user')->where("id = $id")->setField('is_agent',0);
+		$id = intval(I('id'));  // 安全：验证为整数
+		if (!$id) {
+			$this->error('参数错误');
+		}
+		$res = M('user')->where(['id' => $id])->setField('is_agent',0);
 		if($res){
 			$this->success('取消代理成功！');
 		}else{
@@ -99,10 +114,13 @@ class MemberController extends BaseController{
 	}
 
 	public function delete(){
-		$id = I('id');
-		$res = M('user')->where("id = $id")->delete();
+		$id = intval(I('id'));  // 安全：验证为整数
+		if (!$id) {
+			$this->error('参数错误');
+		}
+		$res = M('user')->where(['id' => $id])->delete();
 		if ($res) {
-			M('wx')->where("userid = $id")->delete();
+			M('wx')->where(['userid' => $id])->delete();
 		}
 		if($res){
 			$this->success('删除成功！');

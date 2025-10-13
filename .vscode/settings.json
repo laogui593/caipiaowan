@@ -1,0 +1,4 @@
+{
+    "githubPullRequests.codingAgent.autoCommitAndPush": false,
+    "githubPullRequests.assignCreated": "${user}"
+}
