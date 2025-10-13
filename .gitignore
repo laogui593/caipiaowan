@@ -1,0 +1,26 @@
+# 大文件
+*.tar.gz
+*.zip
+xnwan.tar.gz
+
+# 不需要的文件
+workerman_server.php
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.swp
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE 文件
+.vscode/
+.idea/
+
+# 数据库配置文件 (敏感信息)
+Application/Common/Conf/db.php
