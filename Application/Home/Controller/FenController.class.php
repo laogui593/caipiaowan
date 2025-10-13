@@ -372,9 +372,9 @@ class FenController extends BaseController{
 
 	public function xia(){
 		
-		$data = I();
+		$data = I('post.');
 		$userid = session('user');
-		$userinfo = M('user')->where("id={$userid[id]}")->find();
+		$userinfo = M('user')->where("id={$userid['id']}")->find();
 		if($userinfo['status']==0){
 			$this->error('余额冻结中，请联系客服！');
 		}
