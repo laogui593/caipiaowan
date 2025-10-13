@@ -47,15 +47,33 @@ $this->lang('zh-tw'); // 切换到繁体中文
 cookie('think_language', 'zh-tw');
 ```
 
-## 游戏访问链接
+## 用户访问流程
 
-### 幸运飞艇
+### 正常用户访问路径 (通过底部导航)
+
+1. **首页** → 点击底部"产品"按钮
+2. **产品列表页** (`/Home/Run/index`) → 显示两个游戏卡片:
+   - 🚁 幸运飞艇竞猜
+   - ⏰ 重庆时时彩
+3. **点击游戏卡片** → 进入对应游戏大厅
+
+### 底部导航菜单
+
+- **首页** (`/Home/Shou/index`) - 系统首页
+- **产品** (`/Home/Run/index`) - 游戏产品列表 ⭐
+- **客服** - 在线客服
+- **走势** (`/Home/Run/trend`) - 开奖走势图
+- **我的** (`/Home/User/index`) - 个人中心
+
+### 游戏直接访问链接 (仅供管理员测试)
+
+**幸运飞艇:**
 - 完整链接: `http://yourdomain.com/index.php/Home/Run/xyft`
-- 简化链接 (需URL重写): `http://yourdomain.com/Home/Run/xyft`
+- 简化链接: `http://yourdomain.com/Home/Run/xyft`
 
-### 重庆时时彩
+**重庆时时彩:**
 - 完整链接: `http://yourdomain.com/index.php/Home/Run/ssc`
-- 简化链接 (需URL重写): `http://yourdomain.com/Home/Run/ssc`
+- 简化链接: `http://yourdomain.com/Home/Run/ssc`
 
 ## 常见问题
 
