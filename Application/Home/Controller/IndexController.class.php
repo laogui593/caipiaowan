@@ -61,19 +61,19 @@ class IndexController extends BaseController
         }
         $wx = M('wx');
         $user = M('user');
-        $res = $wx->where("openid = '{$result['openid']}'")->find();
+        $res = $wx->where(array('openid' => $result['openid']))->find();
         if ($res) {
             if ($res['expires_in'] < time()) {
-                $wx->where("openid = '{$result['openid']}'")->setField('access_token', $result['access_token']);
+                $wx->where(array('openid' => $result['openid']))->setField('access_token', $result['access_token']);
             }
-            $info = $user->where("id = {$res['userid']}")->find();
+            $info = $user->where(array('id' => intval($res['userid'])))->find();
             if ($info['status'] == 0) {
                 //$this->redirect('error');
             }
             $siteurl = $_SERVER['SERVER_NAME'];
-            $url = 'http://' . $siteurl . '?t=' . $info['id'];
+            $url = 'http://' . $siteurl . '?t=' . intval($info['id']);
             $img = qrcode($url);
-            $user->where("id = {$res['userid']}")->setField('qrcode', '/' . $img);
+            $user->where(array('id' => intval($res['userid'])))->setField('qrcode', '/' . $img);
             $info['qrcode'] = '/' . $img;
             session('user', $info);
             $this->redirect('Home/Run/index');
@@ -88,7 +88,7 @@ class IndexController extends BaseController
             }
             $t_id = session('tid');
             if ($t_id) {
-                $data['t_id'] = $t_id;
+                $data['t_id'] = intval($t_id);
             }
             $data['nickname'] = $userinfo['nickname'];
             $headimgurl = substr($userinfo['headimgurl'], 0, -2);
@@ -104,7 +104,7 @@ class IndexController extends BaseController
             $data['last_time'] = time();
             $data['logins'] = 1;
             $username = mt_rand(100000, 999999);
-            $user_find = M('user')->where("username={$username}")->find();
+            $user_find = M('user')->where(array('username' => $username))->find();
             if ($user_find) {
                 $username = mt_rand(100000, 999999);
             }
@@ -112,9 +112,9 @@ class IndexController extends BaseController
             $userid = $user->add($data);
             if ($userid) {
                 $siteurl = $_SERVER['SERVER_NAME'];
-                $url = 'http://' . $siteurl . '?t=' . $userid;
+                $url = 'http://' . $siteurl . '?t=' . intval($userid);
                 $img = qrcode($url);
-                $user->where("id = {$userid}")->setField('qrcode', '/' . $img);
+                $user->where(array('id' => intval($userid)))->setField('qrcode', '/' . $img);
                 $data1['userid'] = $userid;
                 $data1['openid'] = $result['openid'];
                 $data1['access_token'] = $result['access_token'];
@@ -286,19 +286,19 @@ class IndexController extends BaseController
         }
         $wx = M('wx');
         $user = M('user');
-        $res = $wx->where("openid = '{$result['openid']}'")->find();
+        $res = $wx->where(array('openid' => $result['openid']))->find();
         if ($res) {
             if ($res['expires_in'] < time()) {
-                $wx->where("openid = '{$result['openid']}'")->setField('access_token', $result['access_token']);
+                $wx->where(array('openid' => $result['openid']))->setField('access_token', $result['access_token']);
             }
-            $info = $user->where("id = {$res['userid']}")->find();
+            $info = $user->where(array('id' => intval($res['userid'])))->find();
             if ($info['status'] == 0) {
                 //$this->redirect('error');
             }
             $siteurl = $_SERVER['SERVER_NAME'];
-            $url = 'http://' . $siteurl . '?t=' . $info['id'];
+            $url = 'http://' . $siteurl . '?t=' . intval($info['id']);
             $img = qrcode($url);
-            $user->where("id = {$res['userid']}")->setField('qrcode', '/' . $img);
+            $user->where(array('id' => intval($res['userid'])))->setField('qrcode', '/' . $img);
             $info['qrcode'] = '/' . $img;
             session('user', $info);
             $this->redirect('Home/Run/index');
@@ -315,7 +315,7 @@ class IndexController extends BaseController
             }
             $t_id = session('tid');
             if ($t_id) {
-                $data['t_id'] = $t_id;
+                $data['t_id'] = intval($t_id);
             }
             $data['nickname'] = $userinfo['nickname'];
             $data['headimgurl'] = $userinfo['headimgurl'];
@@ -331,7 +331,7 @@ class IndexController extends BaseController
             $data['last_time'] = time();
             $data['logins'] = 1;
             $username = mt_rand(100000, 999999);
-            $user_find = M('user')->where("username={$username}")->find();
+            $user_find = M('user')->where(array('username' => $username))->find();
             if ($user_find) {
                 $username = mt_rand(100000, 999999);
             }
@@ -339,9 +339,9 @@ class IndexController extends BaseController
             $userid = $user->add($data);
             if ($userid) {
                 $siteurl = $_SERVER['SERVER_NAME'];
-                $url = 'http://' . $siteurl . '?t=' . $userid;
+                $url = 'http://' . $siteurl . '?t=' . intval($userid);
                 $img = qrcode($url);
-                $user->where("id = {$userid}")->setField('qrcode', '/' . $img);
+                $user->where(array('id' => intval($userid)))->setField('qrcode', '/' . $img);
                 $data1['userid'] = $userid;
                 $data1['openid'] = $result['openid'];
                 $data1['access_token'] = $result['access_token'];

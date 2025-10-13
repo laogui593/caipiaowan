@@ -28,8 +28,13 @@ class LoginController extends BaseController{
 				$password = md5($password);
 				$remember = I('remember');
 				
-				// 查询管理员
-				$res = M('admin')->where("username = '{$username}' && password = '{$password}' && status = 1")->find();
+				// 查询管理员 - 使用数组条件防止SQL注入
+				$where = array(
+					'username' => $username,
+					'password' => $password,
+					'status' => 1
+				);
+				$res = M('admin')->where($where)->find();
 				
 				if($res){
 					// 设置会话
@@ -42,9 +47,11 @@ class LoginController extends BaseController{
 					}
 					
 					// 更新登录信息
-					$map['last_ip'] = get_client_ip();
-					$map['last_time'] = time();
-					M('admin')->where("id = {$res['id']}")->save($map);
+					$map = array(
+						'last_ip' => get_client_ip(),
+						'last_time' => time()
+					);
+					M('admin')->where(array('id' => $res['id']))->save($map);
 					
 					$this->success('登录成功,跳转中~',U('Admin/Index/index'),1);
 				}else{
