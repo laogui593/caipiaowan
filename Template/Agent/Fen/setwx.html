@@ -34,17 +34,17 @@
 						<div class="ibox-content">
 							<form class="form-horizontal" method="post" action="{:U('Agent/Fen/set1')}" name="signupForm" id="signupForm" enctype="multipart/form-data">
 								<div class="form-group">
-									<label class="col-sm-2 control-label">代理微信收款二维码 </label>
+									<label class="col-sm-2 control-label">代理USDT收款二维码 </label>
 									<div class="col-sm-10">
-										<input type="hidden" name="checkpic" id="checkpic" value="__ROOT__/Uploads/{$info.wx_paycode}" />
-										<input type="hidden" name="oldcheckpic" id="oldcheckpic" value="__ROOT__/Uploads/{$info.wx_paycode}" />
+										<input type="hidden" name="checkpic" id="checkpic" value="__ROOT__/Uploads/{$info.usdt_paycode}" />
+										<input type="hidden" name="oldcheckpic" id="oldcheckpic" value="__ROOT__/Uploads/{$info.usdt_paycode}" />
 										<a href="javascript:;" class="file" title="点击选择所要上传的图片">
 											<input type="file" name="file0" id="file0" multiple="multiple"/>
 										</a>
-										<a class="btn btn-primary" style="margin-top: 10px;margin-left: -20px;margin-bottom: 20px;" href="javascript:;" onclick="return backpic('__ROOT__/Uploads/<if condition="$info.wx_paycode eq ''">/img/no_img.jpg<else/>{$info.wx_paycode}</if>');" title="还原修改前的图片" class="file">
+										<a class="btn btn-primary" style="margin-top: 10px;margin-left: -20px;margin-bottom: 20px;" href="javascript:;" onclick="return backpic('__ROOT__/Uploads/<if condition="$info.usdt_paycode eq ''">/img/no_img.jpg<else/>{$info.usdt_paycode}</if>');" title="还原修改前的图片" class="file">
 										撤销上传
 										</a>
-										<div><img src="<if condition="$info[wx_paycode] neq ''">__ROOT__/Uploads/{$info.wx_paycode}<else/>__PUBLIC__/Admin/img/no_img.jpg</if>" height="70" id="img0" ></div>
+										<div><img src="<if condition="$info[usdt_paycode] neq ''">__ROOT__/Uploads/{$info.usdt_paycode}<else/>__PUBLIC__/Admin/img/no_img.jpg</if>" height="70" id="img0" ></div>
 									</div>
 								</div>														
 								<div class="hr-line-dashed"></div>
