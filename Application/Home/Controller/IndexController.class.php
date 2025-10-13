@@ -171,12 +171,14 @@ class IndexController extends BaseController
                     $map['last_time'] = time();
                     M('user')->where("id = {$res['id']}")->save($map);
                     if ($res['status'] == 0) {
-                        //$this->redirect('error');
+                        $this->error('账户已被禁用，请联系客服');
+                        return;
                     }
                     $siteurl = $_SERVER['SERVER_NAME'];
                     $url = 'http://' . $siteurl . '?t=' . $res['id'];
                     $img = qrcode($url);
                     M('user')->where("id = {$res['id']}")->setField('qrcode', '/' . $img);
+                    // 修改：登录成功后跳转到产品页面，而不是"我的"页面
                     $this->success('登录成功,跳转中~', U('/Home/Run/index'), 1);
                 } else {
                     $this->error('用户名或密码错误');
