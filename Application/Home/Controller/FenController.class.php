@@ -13,7 +13,7 @@ class FenController extends BaseController{
 
 		} else {
 			$info = M('config')->where("id = 2")->find();
-			$pay['wx_paycode'] = $info['kefu'];
+			$pay['usdt_paycode'] = $info['kefu'];
 			$info1 = M('config')->where("id = 3")->find();
 			$pay['zfb_paycode'] = $info1['kefu'];
 			$info2 = M('config')->where("id = 4")->find();
@@ -84,7 +84,7 @@ class FenController extends BaseController{
 					'uid'        => $user['id'],
 					'nickname'   => $user['nickname'],
 					'headimgurl' => $user['headimgurl'],
-					'type'       => '微信',
+					'type'       => 'USDT',
 					'money'      => I('post.money'),
 					'balance'    => $user['points'],
 					'username'   => I('post.username'),
@@ -157,7 +157,7 @@ class FenController extends BaseController{
 
 		$user = M('user')->where("id = {$userid['id']}")->find();
 		if($_POST['way']==1){
-			$wayname='微信扫码充值';
+			$wayname='USDT扫码充值';
 		}elseif($_POST['way']==2){
 			$wayname='支付宝扫码充值';
 		}elseif($_POST['way']==3){
@@ -182,7 +182,7 @@ class FenController extends BaseController{
 
 		} else {
 			$info = M('config')->where("id = 2")->find();
-			$pay['wx_paycode'] = $info['kefu'];
+			$pay['usdt_paycode'] = $info['kefu'];
 			$info1 = M('config')->where("id = 3")->find();
 			$pay['zfb_paycode'] = $info1['kefu'];
 			$info2 = M('config')->where("id = 4")->find();
@@ -212,7 +212,7 @@ class FenController extends BaseController{
 
 		} else {
 			$info = M('config')->where("id = 2")->find();
-			$pay['wx_paycode'] = $info['kefu'];
+			$pay['usdt_paycode'] = $info['kefu'];
 			$info1 = M('config')->where("id = 3")->find();
 			$pay['zfb_paycode'] = $info1['kefu'];
 			$info2 = M('config')->where("id = 4")->find();

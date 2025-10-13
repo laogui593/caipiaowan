@@ -334,7 +334,7 @@ class FenController extends BaseController{
 					'username' => session('admin')['username'],
 					'type' => 5,
 					'addtime' => time(),
-					'content' => "修改微信收款二维码"
+					'content' => "修改USDT收款二维码"
 				);
 				M('admin_log')->add($log);
 

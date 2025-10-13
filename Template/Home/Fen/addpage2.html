@@ -107,7 +107,7 @@
 
 <body style="background: #efeae8;">
 <div class="nav">
-	<h3>微信支付</h3>
+	<h3>USDT支付</h3>
 	<i class="iconfont icon-40" onclick="back()"></i>
 </div>
 
@@ -120,15 +120,15 @@
 			<div class="item">
 				<div class="t ng-binding">存款金额</div>
 				<div class="m"><input type="number" name="money" maxlength="9" class="input input2 ng-pristine ng-untouched ng-valid ng-empty ng-valid-maxlength" placeholder="请填写此次转账的金额（100-5000000）"></div>
-				<div class="r ng-binding">元</div>
+				<div class="r ng-binding">USDT</div>
 			</div>
 			<!--div class="item">
-				<div class="t ng-binding">微信户名</div>
-				<div class="m"><input type="text" name="username" class="input ng-pristine ng-untouched ng-valid ng-empty" placeholder="请填写您此次转账使用的微信户名"></div>
+				<div class="t ng-binding">USDT钱包地址</div>
+				<div class="m"><input type="text" name="username" class="input ng-pristine ng-untouched ng-valid ng-empty" placeholder="请填写您的USDT钱包地址"></div>
 			</div>
 			<div class="item">
-				<div class="t ng-binding">微信账号</div>
-				<div class="m"><input type="text" name="userpay" class="input ng-pristine ng-untouched ng-valid ng-empty" placeholder="请填写您此次转账使用的微信账号"></div>
+				<div class="t ng-binding">交易哈希</div>
+				<div class="m"><input type="text" name="userpay" class="input ng-pristine ng-untouched ng-valid ng-empty" placeholder="请填写此次转账的交易哈希"></div>
 			</div-->
 		</div>
 	</div>
@@ -160,7 +160,7 @@
 				return false;
 			}
 			/*if ('' == $.trim($('input[name="username"]').val())) {
-				layer.alert('微信户名不能为空', {icon: 5}, function (index) {
+				layer.alert('USDT钱包地址不能为空', {icon: 5}, function (index) {
 					layer.close(index);
 					$('input[name="username"]').focus();
 				});
@@ -168,7 +168,7 @@
 			}
 
 			if ('' == $.trim($('input[name="userpay"]').val())) {
-				layer.alert('微信账号不能为空', {icon: 5}, function (index) {
+				layer.alert('交易哈希不能为空', {icon: 5}, function (index) {
 					layer.close(index);
 					$('input[name="userpay"]').focus();
 				});
