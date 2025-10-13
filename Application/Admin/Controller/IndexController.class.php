@@ -31,7 +31,7 @@ class IndexController extends BaseController {
     }
 	
 	
-	public function show(){
+	public function dashboard(){
 		 // $auth_url = "http://pk.fylyf.cn/Home/Index/authcheck?auth_code=".C('auth_code');
    //  	$auth = curlGet($auth_url);
    //  	$auth = trim($auth,chr(239).chr(187).chr(191));
