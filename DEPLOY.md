@@ -73,9 +73,33 @@ tail -f websocket.log
 
 ## 数据库配置
 
-配置文件: `Application/Common/Conf/config.php`
+配置文件: `Application/Common/Conf/db.php`
 
-默认使用SQLite数据库，数据库文件位于根目录。
+当前使用MySQL数据库配置：
+- 数据库名: `laogui`
+- 用户名: `laogui`
+- 密码: `123456`
+- 端口: `3306`
+
+### ⚠️ 数据库权限问题修复
+
+如果遇到错误: `SELECT command denied to user 'laogui'@'localhost' for table 'think_php'`
+
+**快速修复方法**:
+1. 访问: `http://你的域名/数据库权限修复.html`
+2. 点击"运行诊断工具"查看问题
+3. 以root用户执行提供的SQL命令
+
+**详细文档**:
+- 中文指南: `数据库权限修复指南.md`
+- English guide: `DATABASE_PERMISSION_FIX.md`
+- 配置说明: `DATABASE_CONFIG.md`
+
+**核心解决方案**:
+```sql
+GRANT SELECT ON `information_schema`.* TO 'laogui'@'localhost';
+FLUSH PRIVILEGES;
+```
 
 ## WebSocket配置
 

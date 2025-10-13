@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库权限快速修复</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .error-box {
+            background: #fee;
+            border-left: 4px solid #f44;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        
+        .error-box h3 {
+            color: #c33;
+            margin-bottom: 10px;
+        }
+        
+        .error-box code {
+            display: block;
+            background: #fff;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #c33;
+        }
+        
+        .steps {
+            margin: 30px 0;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .step p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .sql-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .sql-box .comment {
+            color: #75715e;
+        }
+        
+        .sql-box .keyword {
+            color: #66d9ef;
+        }
+        
+        .sql-box .string {
+            color: #a6e22e;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .button {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .button-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .button-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .info-box h4 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+        
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .success-box h4 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+        
+        .checklist {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 数据库权限快速修复</h1>
+            <p>解决 MySQL 用户权限问题</p>
+        </div>
+        
+        <div class="content">
+            <div class="error-box">
+                <h3>❌ 遇到以下错误？</h3>
+                <code>SELECT command denied to user 'laogui'@'localhost' for table 'think_php'</code>
+                <p style="margin-top: 15px;">这是 MySQL 数据库权限问题，需要授予 <strong>information_schema</strong> 的访问权限。</p>
+            </div>
+            
+            <div class="button-group">
+                <a href="fix_permissions.php" class="button button-primary">🔍 运行诊断工具</a>
+                <a href="数据库权限修复指南.md" class="button button-secondary">📖 查看完整指南</a>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <h3>步骤 1: 运行诊断工具</h3>
+                    <p>点击上方的 <strong>"运行诊断工具"</strong> 按钮，访问 <code>fix_permissions.php</code></p>
+                    <p>工具会自动检测：</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>数据库连接状态</li>
+                        <li>当前用户权限</li>
+                        <li>数据表访问权限</li>
+                        <li>问题原因分析</li>
+                    </ul>
+                </div>
+                
+                <div class="step">
+                    <h3>步骤 2: 以 root 用户执行修复命令</h3>
+                    <p>复制以下 SQL 命令，以 <strong>MySQL root 用户</strong> 身份执行：</p>
+                    
+                    <div class="sql-box">
+<span class="comment">-- 1. 删除可能有问题的用户</span>
+<span class="keyword">DROP USER IF EXISTS</span> <span class="string">'laogui'@'localhost'</span>;
+
+<span class="comment">-- 2. 重新创建用户</span>
+<span class="keyword">CREATE USER</span> <span class="string">'laogui'@'localhost'</span> <span class="keyword">IDENTIFIED BY</span> <span class="string">'123456'</span>;
+
+<span class="comment">-- 3. 创建数据库</span>
+<span class="keyword">CREATE DATABASE IF NOT EXISTS</span> <span class="string">`laogui`</span> <span class="keyword">CHARACTER SET</span> utf8 <span class="keyword">COLLATE</span> utf8_general_ci;
+
+<span class="comment">-- 4. 授予数据库完整权限</span>
+<span class="keyword">GRANT ALL PRIVILEGES ON</span> <span class="string">`laogui`.*</span> <span class="keyword">TO</span> <span class="string">'laogui'@'localhost'</span>;
+
+<span class="comment">-- 5. 授予 information_schema 的 SELECT 权限（关键！）</span>
+<span class="keyword">GRANT SELECT ON</span> <span class="string">`information_schema`.*</span> <span class="keyword">TO</span> <span class="string">'laogui'@'localhost'</span>;
+
+<span class="comment">-- 6. 刷新权限</span>
+<span class="keyword">FLUSH PRIVILEGES</span>;
+
+<span class="comment">-- 7. 验证权限</span>
+<span class="keyword">SHOW GRANTS FOR</span> <span class="string">'laogui'@'localhost'</span>;
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3>步骤 3: 验证修复结果</h3>
+                    <p>再次运行诊断工具，确认所有检查项都显示 ✅</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h4>💡 为什么需要 information_schema 权限？</h4>
+                <p>ThinkPHP 框架需要访问 <code>information_schema</code> 数据库来查询表结构、字段信息等元数据。没有这个权限会导致系统无法正常运行。</p>
+            </div>
+            
+            <div class="success-box">
+                <h4>✅ 修复后应该看到的权限</h4>
+                <ul class="checklist">
+                    <li>GRANT USAGE ON *.* TO 'laogui'@'localhost'</li>
+                    <li>GRANT ALL PRIVILEGES ON `laogui`.* TO 'laogui'@'localhost'</li>
+                    <li>GRANT SELECT ON `information_schema`.* TO 'laogui'@'localhost'</li>
+                </ul>
+            </div>
+            
+            <div class="info-box">
+                <h4>🔧 其他修复方法</h4>
+                <p><strong>方法 1: 命令行</strong></p>
+                <p><code>mysql -u root -p</code> 然后执行上述 SQL</p>
+                
+                <p style="margin-top: 15px;"><strong>方法 2: phpMyAdmin</strong></p>
+                <p>登录后点击 SQL 标签，粘贴命令并执行</p>
+                
+                <p style="margin-top: 15px;"><strong>方法 3: 宝塔面板</strong></p>
+                <p>在数据库管理中设置权限，然后在 SQL 终端执行授权命令</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>🔗 相关文件: <a href="fix_permissions.php">fix_permissions.php</a> | <a href="数据库权限修复指南.md">完整指南</a> | <a href="DATABASE_CONFIG.md">配置说明</a></p>
+            <p style="margin-top: 10px;">最后更新: 2025-10-13</p>
+        </footer>
+    </div>
+</body>
+</html>
