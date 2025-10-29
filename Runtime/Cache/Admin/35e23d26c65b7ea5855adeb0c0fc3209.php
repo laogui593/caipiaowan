@@ -1,0 +1,146 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html>
+
+	
+	<head>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>后台管理系统 - 登录</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+
+		
+		<link href="/Public/Admin/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+		<link href="/Public/Admin/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+
+		<link href="/Public/Admin/css/animate.min.css" rel="stylesheet">
+		<link href="/Public/Admin/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+		<!--[if lt IE 9]>
+    	<meta http-equiv="refresh" content="0;ie.html" />
+    	<![endif]-->
+		<script>
+			if(window.top !== window.self) {
+				window.top.location = window.location;
+			}
+		</script>
+		<style>
+			body.gray-bg {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				min-height: 100vh;
+			}
+			.middle-box {
+				background: rgba(255, 255, 255, 0.95);
+				border-radius: 16px;
+				padding: 40px;
+				box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+				backdrop-filter: blur(10px);
+			}
+			.middle-box h3 {
+				color: #333;
+				font-weight: 600;
+				margin-bottom: 30px;
+			}
+			.form-control {
+				height: 45px;
+				border-radius: 8px;
+				border: 1px solid #ddd;
+				padding: 10px 15px;
+				font-size: 14px;
+				transition: all 0.3s ease;
+			}
+			.form-control:focus {
+				border-color: #667eea;
+				box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+			}
+			.btn-success {
+				height: 45px;
+				border-radius: 8px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				border: none;
+				font-weight: 600;
+				font-size: 16px;
+				transition: all 0.3s ease;
+			}
+			.btn-success:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+			}
+			.form-group {
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+
+	<body class="gray-bg">
+
+		<div class="middle-box text-center loginscreen  animated fadeInDown">
+			<div>
+				<div>
+					<h1 style="height:100px"></h1>
+				</div>
+				<h3>后台管理系统</h3>
+				<form class="m-t" role="form" method="post" action="<?php echo U('Admin/Login/login');?>" id="LoginForm">
+					<div class="form-group">
+						<input type="text" id="username" name="username" class="form-control" placeholder="请输入用户名" required>
+					</div>
+					<div class="form-group">
+						<input type="password" id="password" name="password" class="form-control" placeholder="请输入密码" required>
+					</div>
+					<button type="submit" class="btn btn-success block full-width m-b">登 录</button>
+				</form>
+			</div>
+		</div>
+		<script src="/Public/Admin/js/jquery.min.js?v=2.1.4"></script>
+		<script src="/Public/Admin/js/bootstrap.min.js?v=3.3.6"></script>
+		
+		<script src="/Public/Common/js/ajaxForm.js"></script>
+		<script src="/Public/layer/layer.js"></script>
+		
+		<script>
+			$(function(){
+				$('#LoginForm').ajaxForm({
+					beforeSubmit: checkForm,
+					success: complete, 
+					dataType: 'json'
+				});
+				function checkForm(){
+					var username = $.trim($('#username').val());
+					var password = $.trim($('#password').val());
+					
+					if( username == ''){
+						layer.alert('请输入用户名', {icon: 5}, function(index){
+			 			layer.close(index);
+						$('#username').focus(); 
+						});
+						return false;
+					}
+					if( password == ''){
+						layer.alert('请输入密码', {icon: 5}, function(index){
+			 			layer.close(index);
+						$('#password').focus(); 
+						});
+						return false;
+					}
+					
+					// 确保没有验证码相关的验证
+					return true;
+				}
+				function complete(data){
+					if(data.status==1){
+						$('.btn').attr('disabled','disabled');
+						layer.msg(data.info, function(index){
+			 				layer.close(index);
+							window.location.href=data.url;
+						});
+					}else{
+						layer.msg(data.info);
+						$('#password').val('').focus();
+						return false;	
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
