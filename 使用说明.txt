@@ -1,0 +1,67 @@
+========================================
+彩票系统完整部署使用说明
+========================================
+
+一、系统已成功部署运行
+
+✓ 前端API服务：端口 7180
+  访问地址：http://localhost:7180
+  API接口：http://localhost:7180/index.php?m=Home&c=Load&a=initial
+  
+✓ 后台管理服务：端口 7170  
+  访问地址：http://localhost:7170
+  登录页面：http://localhost:7170/index.php?m=Admin&c=Login&a=index
+
+二、数据库配置
+
+服务器：202.189.7.196:3306
+数据库：root
+用户名：root
+密码：Fagp@1908!
+
+三、启动命令
+
+1. 一键启动（推荐）
+   ./完整启动脚本.sh
+
+2. 手动启动前端（7180）
+   nohup php -S 0.0.0.0:7180 -t . > frontend_7180.log 2>&1 &
+
+3. 手动启动后台（7170）
+   nohup php -S 0.0.0.0:7170 -t . > backend_7170.log 2>&1 &
+
+四、停止服务
+
+kill $(cat frontend_7180.pid)
+kill $(cat backend_7170.pid)
+
+或直接：
+pkill -f "php.*7180"
+pkill -f "php.*7170"
+
+五、查看日志
+
+tail -f frontend_7180.log
+tail -f backend_7170.log
+
+六、测试API
+
+curl http://localhost:7180/index.php?m=Home&c=Load&a=initial
+
+返回JSON数据，包含：
+- 系统配置
+- 游戏列表
+- 统计数据
+- WebSocket配置
+
+七、文件说明
+
+完整启动脚本.sh - 自动启动脚本
+部署完成说明.md - 详细部署文档
+LoadController.class.php - API接口控制器
+check_database.php - 数据库检查工具
+api_test_page.html - API测试页面
+
+========================================
+系统已完全部署完成，可以正常使用！
+========================================
