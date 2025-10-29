@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>API测试 - 7180端口</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        h1 { color: #333; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; }
+        .test-btn { background: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 10px 5px; }
+        .test-btn:hover { background: #45a049; }
+        .result { background: #f9f9f9; padding: 20px; margin: 20px 0; border-radius: 5px; border: 1px solid #ddd; }
+        pre { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .success { color: #4CAF50; font-weight: bold; }
+        .error { color: #f44336; font-weight: bold; }
+        .info-box { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196F3; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 彩票系统API测试</h1>
+        
+        <div class="info-box">
+            <strong>系统配置：</strong><br>
+            前端API端口: <strong>7180</strong> (支持 /load/initial 等接口)<br>
+            后台管理端口: <strong>7170</strong><br>
+            数据库服务器: <strong>202.189.7.196</strong>
+        </div>
+
+        <h2>1. 测试 /load/initial 接口</h2>
+        <button class="test-btn" onclick="testLoadInitial()">测试 /load/initial</button>
+        <div id="load-initial-result" class="result"></div>
+
+        <h2>2. 测试其他API接口</h2>
+        <button class="test-btn" onclick="testApiIndex()">测试 API Index</button>
+        <button class="test-btn" onclick="testGameList()">测试游戏列表</button>
+        <div id="api-result" class="result"></div>
+
+        <h2>3. 访问链接</h2>
+        <div>
+            <a href="http://localhost:7180/index.php?m=Home&c=Load&a=initial" target="_blank" class="test-btn">直接访问 /load/initial</a>
+            <a href="http://localhost:7180/" target="_blank" class="test-btn">前端首页 (7180)</a>
+            <a href="http://localhost:7170/index.php?m=Admin&c=Login&a=index" target="_blank" class="test-btn">后台登录 (7170)</a>
+        </div>
+
+        <h2>4. 服务状态</h2>
+        <button class="test-btn" onclick="checkStatus()">检查服务状态</button>
+        <div id="status-result" class="result"></div>
+    </div>
+
+    <script>
+        function testLoadInitial() {
+            const resultDiv = document.getElementById('load-initial-result');
+            resultDiv.innerHTML = '<p>正在测试 /load/initial 接口...</p>';
+            
+            fetch('http://localhost:7180/index.php?m=Home&c=Load&a=initial')
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error('HTTP ' + response.status + ': ' + text.substring(0, 200));
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    resultDiv.innerHTML = '<p class="success">✓ 接口响应成功</p><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = '<p class="error">✗ 接口错误</p><pre>' + error.message + '</pre>';
+                });
+        }
+
+        function testApiIndex() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p>正在测试 API...</p>';
+            
+            fetch('http://localhost:7180/index.php?m=Home&c=Api&a=index')
+                .then(response => response.text())
+                .then(data => {
+                    if (data.length > 0) {
+                        resultDiv.innerHTML = '<p class="success">✓ API响应成功 (' + data.length + ' 字节)</p><pre>' + data.substring(0, 500) + '...</pre>';
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = '<p class="error">✗ 错误: ' + error.message + '</p>';
+                });
+        }
+
+        function testGameList() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p>正在测试游戏列表...</p>';
+            
+            fetch('http://localhost:7180/index.php?m=Home&c=Run&a=index')
+                .then(response => response.text())
+                .then(data => {
+                    resultDiv.innerHTML = '<p class="success">✓ 游戏列表响应 (' + data.length + ' 字节)</p>';
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = '<p class="error">✗ 错误: ' + error.message + '</p>';
+                });
+        }
+
+        function checkStatus() {
+            const resultDiv = document.getElementById('status-result');
+            const info = {
+                '当前时间': new Date().toLocaleString('zh-CN'),
+                '前端API端口': '7180',
+                '后台管理端口': '7170',
+                '浏览器': navigator.userAgent.split(' ').pop()
+            };
+            resultDiv.innerHTML = '<pre>' + JSON.stringify(info, null, 2) + '</pre>';
+        }
+
+        // 页面加载时自动检查
+        window.onload = function() {
+            checkStatus();
+        };
+    </script>
+</body>
+</html>
